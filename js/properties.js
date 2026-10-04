@@ -68,7 +68,7 @@ export function renderProperties(state) {
   document.getElementById('style-properties').hidden = !element || !Object.keys(STYLE_FIELDS).some(property => properties.includes(property));
 }
 
-export function initializeProperties(state, onChange) {
+export function initializeProperties(state, onChange, onCommit = () => {}) {
   const container = document.getElementById('style-fields');
   for (const [property, definition] of Object.entries(STYLE_FIELDS)) {
     const label = document.createElement('label');
@@ -95,7 +95,7 @@ export function initializeProperties(state, onChange) {
   container.append(transparentLabel);
   transparent.addEventListener('change', () => {
     applyProperty(state, 'backgroundColor', transparent.checked ? 'transparent' : document.getElementById('property-backgroundColor').value);
-    onChange(); renderProperties(state);
+    onChange(); renderProperties(state); onCommit();
   });
   for (const property of ['x', 'y', 'width', 'height', 'content', ...Object.keys(STYLE_FIELDS)]) {
     const field = document.getElementById(`property-${property}`);
@@ -108,6 +108,8 @@ export function initializeProperties(state, onChange) {
       const element = getSelectedElement(state);
       if (element) field.value = property in element ? element[property] : element.styles[property];
       renderProperties(state);
+      onCommit();
     });
+    field.addEventListener('blur', onCommit);
   }
 }

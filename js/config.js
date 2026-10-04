@@ -7,7 +7,7 @@ export const DEVICE_SIZES = Object.freeze({
 export const GRID_SIZE = 16;
 export const ZOOM = Object.freeze({ min: 0.1, max: 2, step: 0.1, initial: 0.5 });
 
-// Deshacer, rehacer y guardar se conectarán en sus respectivas etapas.
+// Guardar se conectará en la etapa de persistencia.
 export const PLANNED_SHORTCUTS = Object.freeze({
   undo: 'Ctrl+Z', redo: 'Ctrl+Shift+Z', duplicate: 'Ctrl+D',
   delete: 'Delete', move: 'Arrow', moveFast: 'Shift+Arrow', save: 'Ctrl+S',
@@ -21,3 +21,5 @@ export const STYLE_LIMITS = Object.freeze({
   borderWidth: { min: 0, max: 20 },
   borderRadius: { min: 0, max: 200 },
 });
+
+export const HISTORY_LIMIT = 50;

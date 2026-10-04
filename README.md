@@ -1,6 +1,6 @@
 # Wirefrapp
 
-Editor local de wireframes con HTML, CSS y JavaScript nativo. Esta versión implementa las etapas 1 a 4: base visual, componentes básicos, selección, manipulación y edición de propiedades. No requiere dependencias ni compilación.
+Editor local de wireframes con HTML, CSS y JavaScript nativo. Esta versión implementa las etapas 1 a 5: base visual, componentes básicos, selección, manipulación, edición de propiedades e historial. No requiere dependencias ni compilación.
 
 ## Ejecutar localmente
 
@@ -33,7 +33,7 @@ Elegir “Guardar como PDF”, papel A4 y desactivar los encabezados y pies de p
 
 ## Controles preparados
 
-Gestión de proyectos, guardado y Undo/Redo están deshabilitados. Navbar, Sidebar, Card, Formulario, Tabla y Footer siguen visibles como próximos. Todavía no se implementan historial ni persistencia. Los componentes son representaciones visuales: sus botones y campos se seleccionan, pero no funcionan como un formulario real. Ctrl+D (Cmd+D en macOS) duplica, Delete elimina, las flechas mueven 1 px y Shift+flechas mueven 10 px. Los atajos se ignoran dentro de campos y diálogos. Deshacer, rehacer y guardar todavía no están conectados.
+Gestión de proyectos y guardado están deshabilitados. Navbar, Sidebar, Card, Formulario, Tabla y Footer siguen visibles como próximos. Todavía no se implementa persistencia. Los componentes son representaciones visuales: sus botones y campos se seleccionan, pero no funcionan como un formulario real. Ctrl+D (Cmd+D en macOS) duplica, Delete elimina, las flechas mueven 1 px y Shift+flechas mueven 10 px. Los atajos se ignoran dentro de campos y diálogos. Undo/Redo y Ctrl+Z / Ctrl+Shift+Z están habilitados (Cmd en macOS), también mientras se editan propiedades. Guardar todavía no está conectado.
 
 ## Organización
 
@@ -48,7 +48,7 @@ Gestión de proyectos, guardado y Undo/Redo están deshabilitados. Navbar, Sideb
 - `js/properties.js`: edición, validación y presentación de propiedades según el tipo seleccionado.
 - `js/ui.js`: eventos de los controles activos.
 
-Los módulos de historial, almacenamiento y proyectos se crearán cuando se implementen sus respectivas etapas. No existe módulo de exportación ni librerías externas.
+Los módulos de almacenamiento y proyectos se crearán cuando se implementen sus respectivas etapas. No existe módulo de exportación ni librerías externas.
 
 ## Estado y representación
 
@@ -73,4 +73,24 @@ Las seis herramientas alinean el componente respecto del lienzo y conservan su t
 
 - `js/alignment.js`: calcula cambios para una lista de elementos, preparada para selección múltiple futura.
 
-El historial y el guardado permanecen pendientes.
+El guardado permanece pendiente.
+
+## Historial
+
+Undo y Redo recuperan copias de los datos del proyecto. Se conservan hasta 50 acciones anteriores, configurable con HISTORY_LIMIT en config.js. Cada incorporación, duplicación, eliminación, alineación o movimiento con flechas cuenta como una acción. Cada arrastre y redimensionamiento completo cuenta como una sola acción. Las ediciones de un campo se agrupan hasta confirmar el cambio o salir del campo; se siguen viendo mientras se escribe. Los gestos cancelados y los cambios que no alteran datos no generan entradas.
+
+Ctrl+Z deshace y Ctrl+Shift+Z rehace, incluso dentro del panel de propiedades; en macOS se usa Cmd. Una nueva edición después de deshacer descarta la rama de rehacer. Selección, zoom y cuadrícula no se guardan en el historial. Si una restauración elimina el elemento seleccionado, se limpia la selección.
+
+Confirmar el cambio de dispositivo limpia también el historial; cancelar lo conserva. El historial vive solamente en memoria durante la sesión.
+
+- `js/history.js`: copias del proyecto, registro, restauración y límite del historial.
+
+## Verificar el historial
+
+Las pruebas usan únicamente las herramientas incluidas en Node.js. Con Node instalado, ejecutar desde la carpeta del proyecto:
+
+```sh
+node --experimental-default-type=module --test tests/history.test.mjs
+```
+
+Estas pruebas comprueban recuperación de datos y estilos, agrupación, cambios sin efecto, ramas de rehacer, límite de acciones y reinicio. Node solo se utiliza para las pruebas; la aplicación sigue funcionando con un servidor estático.

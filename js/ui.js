@@ -1,3 +1,4 @@
+import { createHistory } from './history.js';
 import { getAlignmentChanges } from './alignment.js';
 import { DEVICE_SIZES } from './config.js';
 import { initializePointerInteractions, initializeShortcuts } from './interactions.js';
@@ -7,6 +8,15 @@ import { addComponent, selectElement, changeDevice, getSelectedElement, duplicat
 import { renderProperties, initializeProperties } from './properties.js';
 
 export function initializeControls(state) {
+  const history = createHistory(state);
+  let gestureInProgress = false;
+  const undoButton = document.getElementById('undo');
+  const redoButton = document.getElementById('redo');
+  const updateHistoryControls = () => {
+    undoButton.disabled = gestureInProgress || !history.canUndo();
+    redoButton.disabled = gestureInProgress || !history.canRedo();
+  };
+  const commit = () => { history.commit(); updateHistoryControls(); };
   const elements = {
     canvas: document.getElementById('canvas'), frame: document.getElementById('canvas-frame'),
     viewport: document.getElementById('canvas-viewport'), size: document.getElementById('canvas-size'),
@@ -25,28 +35,57 @@ export function initializeControls(state) {
     const selected = getSelectedElement(state);
     if (selected) updateElementGeometry(elements.canvas, selected);
     renderProperties(state);
+    updateHistoryControls();
   };
   const refreshElements = () => {
     renderCanvasElements(state, elements.canvas);
     updateSelection();
+    updateHistoryControls();
   };
   const actions = {
-    duplicate: () => { duplicateSelectedElement(state); refreshElements(); },
-    delete: () => { deleteSelectedElement(state); refreshElements(); },
-    geometryChange,
+    duplicate: () => { commit(); duplicateSelectedElement(state); commit(); refreshElements(); },
+    delete: () => { commit(); deleteSelectedElement(state); commit(); refreshElements(); },
+    geometryChange, commit,
+    isBusy: () => gestureInProgress,
+    undo: () => restoreHistory('undo'),
+    redo: () => restoreHistory('redo'),
   };
-  initializeProperties(state, () => updateElementAppearance(state, elements.canvas));
+  function restoreHistory(direction) {
+    if (gestureInProgress) return;
+    const field = document.activeElement;
+    const restoreFocus = field?.matches('input, textarea, select');
+    if (restoreFocus) field.blur();
+    history[direction]();
+    refreshElements();
+    render();
+    if (restoreFocus && !field.disabled && !field.closest('[hidden]')) field.focus({ preventScroll: true });
+  }
+  undoButton.addEventListener('click', actions.undo);
+  redoButton.addEventListener('click', actions.redo);
+  initializeProperties(state, () => {
+    updateElementAppearance(state, elements.canvas);
+    updateHistoryControls();
+  }, commit);
   document.getElementById('alignment-properties').addEventListener('click', event => {
     const button = event.target.closest('[data-alignment]');
     const selected = getSelectedElement(state);
     if (!button || !selected) return;
+    commit();
     const [change] = getAlignmentChanges([selected], button.dataset.alignment, DEVICE_SIZES[state.project.device]);
     updateSelectedGeometry(state, change.geometry);
     geometryChange();
+    commit();
   });
   document.getElementById('duplicate-element').addEventListener('click', actions.duplicate);
   document.getElementById('delete-element').addEventListener('click', actions.delete);
-  initializePointerInteractions(state, elements.canvas, updateSelection, geometryChange);
+  initializePointerInteractions(state, elements.canvas, updateSelection, geometryChange, {
+    onCommit: commit,
+    onBusyChange: busy => {
+      if (busy) commit();
+      gestureInProgress = busy;
+      updateHistoryControls();
+    },
+  });
   initializeShortcuts(state, actions);
   initializeCanvasSelection(elements.canvas, id => {
     selectElement(state, id);
@@ -55,7 +94,9 @@ export function initializeControls(state) {
   document.getElementById('component-catalog').addEventListener('click', event => {
     const button = event.target.closest('[data-component-type]');
     if (!button || button.disabled) return;
+    commit();
     addComponent(state, button.dataset.componentType);
+    commit();
     refreshElements();
   });
   refreshElements();
@@ -73,6 +114,7 @@ export function initializeControls(state) {
   });
   deviceDialog.addEventListener('close', () => {
     if (deviceDialog.returnValue === 'yes' && changeDevice(state, pendingDevice)) {
+      history.reset();
       deviceSelector.value = state.project.device;
       refreshElements();
       fit();

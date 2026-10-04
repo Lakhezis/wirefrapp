@@ -2,7 +2,7 @@ import { DEVICE_SIZES } from './config.js';
 import { moveGeometry, resizeGeometry } from './geometry.js';
 import { getSelectedElement, selectElement, updateSelectedGeometry } from './state.js';
 
-export function initializePointerInteractions(state, canvas, onSelection, onGeometryChange) {
+export function initializePointerInteractions(state, canvas, onSelection, onGeometryChange, lifecycle = {}) {
   let gesture = null;
   let suppressClick = false;
   canvas.addEventListener('click', event => {
@@ -16,9 +16,12 @@ export function initializePointerInteractions(state, canvas, onSelection, onGeom
     const node = event.target.closest('[data-element-id]');
     if (!node) return;
     const direction = event.target.closest('[data-resize-direction]')?.dataset.resizeDirection;
+    // Confirma la edición del elemento anterior antes de cambiar la selección.
+    if (document.activeElement?.matches('input, textarea, select')) document.activeElement.blur();
     selectElement(state, node.dataset.elementId);
     onSelection();
-    node.focus({ preventScroll: true });
+    const currentNode = canvas.querySelector(`[data-element-id="${node.dataset.elementId}"]`);
+    currentNode.focus({ preventScroll: true });
     gesture = {
       pointerId: event.pointerId, direction,
       start: { ...getSelectedElement(state), styles: { ...getSelectedElement(state).styles } },
@@ -27,6 +30,7 @@ export function initializePointerInteractions(state, canvas, onSelection, onGeom
       scrollTop: canvas.parentElement.parentElement.scrollTop,
       zoom: state.view.zoom,
     };
+    lifecycle.onBusyChange?.(true);
     canvas.setPointerCapture(event.pointerId);
     event.preventDefault();
   });
@@ -51,6 +55,8 @@ export function initializePointerInteractions(state, canvas, onSelection, onGeom
     gesture = null;
     suppressClick = true;
     canvas.releasePointerCapture(event.pointerId);
+    lifecycle.onBusyChange?.(false);
+    lifecycle.onCommit?.();
   });
   canvas.addEventListener('pointercancel', event => {
     if (!gesture || event.pointerId !== gesture.pointerId) return;
@@ -58,16 +64,29 @@ export function initializePointerInteractions(state, canvas, onSelection, onGeom
     updateSelectedGeometry(state, { x, y, width, height });
     getSelectedElement(state).styles.borderWidth = gesture.start.styles.borderWidth;
     gesture = null;
+    lifecycle.onBusyChange?.(false);
     onGeometryChange();
   });
-  canvas.addEventListener('lostpointercapture', () => { gesture = null; });
+  canvas.addEventListener('lostpointercapture', () => {
+    if (!gesture) return;
+    gesture = null;
+    lifecycle.onBusyChange?.(false);
+    lifecycle.onCommit?.();
+  });
 }
 
 export function initializeShortcuts(state, actions) {
   document.addEventListener('keydown', event => {
-    if (document.querySelector('dialog[open]') || event.target.closest('input, textarea, select, [contenteditable="true"]')) return;
-    if (!getSelectedElement(state)) return;
+    if (document.querySelector('dialog[open]')) return;
     const modifier = event.ctrlKey || event.metaKey;
+    if (modifier && !event.altKey && event.key.toLowerCase() === 'z') {
+      event.preventDefault();
+      if (actions.isBusy()) return;
+      if (event.shiftKey) actions.redo(); else actions.undo();
+      return;
+    }
+    if (actions.isBusy() || event.target.closest('input, textarea, select, [contenteditable="true"]')) return;
+    if (!getSelectedElement(state)) return;
     if (modifier && !event.shiftKey && !event.altKey && event.key.toLowerCase() === 'd') {
       event.preventDefault(); actions.duplicate(); return;
     }
@@ -83,5 +102,6 @@ export function initializeShortcuts(state, actions) {
     // El teclado conserva movimientos exactos de 1/10 px, incluso con ajuste a cuadrícula.
     updateSelectedGeometry(state, moveGeometry(element, element.x + dx * step, element.y + dy * step, DEVICE_SIZES[state.project.device]));
     actions.geometryChange();
+    actions.commit();
   });
 }
