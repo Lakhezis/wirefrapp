@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wirefrapp · Editor de wireframes</title>
+  <link rel="stylesheet" href="css/editor.css">
+  <link rel="stylesheet" href="css/components.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Wirefrapp, inicio"><span class="brand-mark" aria-hidden="true">▦</span> Wirefrapp<span class="badge">MVP</span></a>
+    <div class="project-area"><span class="project-name">Proyecto sin título</span><span class="project-status">Sin guardar · etapa 1</span></div>
+    <div class="toolbar-group" aria-label="Gestión de proyectos">
+      <button disabled title="Disponible en una próxima etapa">Nuevo</button>
+      <button disabled>Abrir</button><button disabled>Renombrar</button><button disabled>Eliminar</button>
+      <button class="primary" disabled>Guardar</button>
+    </div>
+  </header>
+  <main class="editor">
+    <aside class="panel component-panel" aria-labelledby="components-title">
+      <div class="panel-heading"><h1 id="components-title">Componentes</h1><p>Las piezas de tu próxima idea.</p></div>
+      <div id="component-catalog"></div>
+      <p class="panel-note">El catálogo se habilitará en la etapa de componentes.</p>
+    </aside>
+    <section class="workspace" aria-label="Área de diseño">
+      <div class="canvas-toolbar">
+        <div class="toolbar-group"><label for="device">Pantalla</label><select id="device"><option value="desktop">Desktop</option><option value="tablet">Tablet</option><option value="mobile">Mobile</option></select></div>
+        <div class="toolbar-group history-controls"><button disabled aria-label="Deshacer" title="Deshacer · Ctrl+Z">↶ <span>Undo</span></button><button disabled aria-label="Rehacer" title="Rehacer · Ctrl+Shift+Z">↷ <span>Redo</span></button></div>
+        <div class="toolbar-group zoom-controls"><button id="zoom-out" aria-label="Alejar">−</button><output id="zoom-value" aria-live="polite">50%</output><button id="zoom-in" aria-label="Acercar">+</button><button id="zoom-fit">Ajustar</button></div>
+      </div>
+      <div class="grid-toolbar"><label><input id="show-grid" type="checkbox"> Mostrar cuadrícula</label><label title="Se aplicará al mover componentes en una próxima etapa"><input id="snap-grid" type="checkbox"> Ajustar a cuadrícula</label><span id="grid-size"></span></div>
+      <div id="canvas-viewport" class="canvas-viewport">
+        <div id="canvas-frame" class="canvas-frame"><div id="canvas" class="wireframe-canvas" role="region" aria-label="Lienzo vacío de wireframe"></div></div>
+      </div>
+      <footer class="workspace-status"><span id="canvas-size" aria-live="polite"></span><span id="snap-status">Ajuste a cuadrícula desactivado</span></footer>
+    </section>
+    <aside class="panel properties-panel" aria-labelledby="properties-title">
+      <div class="panel-heading"><h2 id="properties-title">Propiedades</h2><p>Un lugar para cada detalle.</p></div>
+      <div class="selection-empty"><span aria-hidden="true">⌖</span><strong>Ningún elemento seleccionado</strong><p>Aquí podrás editar los componentes que agregues al lienzo.</p></div>
+      <fieldset disabled><legend>Posición y tamaño</legend><div class="property-grid"><label>X<input type="number" placeholder="—"></label><label>Y<input type="number" placeholder="—"></label><label>Ancho<input type="number" placeholder="—"></label><label>Alto<input type="number" placeholder="—"></label></div></fieldset>
+      <fieldset disabled><legend>Contenido</legend><label>Texto<textarea rows="3" placeholder="Seleccioná un componente"></textarea></label></fieldset>
+      <fieldset disabled><legend>Alineación en el lienzo</legend><div class="alignment-tools"><button aria-label="Alinear a la izquierda" title="Izquierda">⇤</button><button aria-label="Centrar horizontalmente" title="Centro horizontal">↔</button><button aria-label="Alinear a la derecha" title="Derecha">⇥</button><button aria-label="Alinear arriba" title="Arriba">↥</button><button aria-label="Centrar verticalmente" title="Centro vertical">↕</button><button aria-label="Alinear abajo" title="Abajo">↧</button></div></fieldset>
+      <fieldset disabled><legend>Acciones</legend><div class="toolbar-group"><button title="Ctrl+D">Duplicar</button><button title="Delete">Eliminar</button></div></fieldset>
+      <p class="panel-note">Para guardar una vista en PDF, usá Ctrl+P y elegí “Guardar como PDF”.</p>
+    </aside>
+  </main>
+</body>
+</html>
