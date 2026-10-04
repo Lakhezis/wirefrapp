@@ -1,3 +1,4 @@
+import { initializeProjects } from './projects.js';
 import { createHistory } from './history.js';
 import { getAlignmentChanges } from './alignment.js';
 import { DEVICE_SIZES } from './config.js';
@@ -9,12 +10,14 @@ import { renderProperties, initializeProperties } from './properties.js';
 
 export function initializeControls(state) {
   const history = createHistory(state);
+  let projects = null;
   let gestureInProgress = false;
   const undoButton = document.getElementById('undo');
   const redoButton = document.getElementById('redo');
   const updateHistoryControls = () => {
     undoButton.disabled = gestureInProgress || !history.canUndo();
     redoButton.disabled = gestureInProgress || !history.canRedo();
+    projects?.updateStatus();
   };
   const commit = () => { history.commit(); updateHistoryControls(); };
   const elements = {
@@ -135,4 +138,23 @@ export function initializeControls(state) {
     state.view.snapToGrid = event.target.checked; render();
   });
   fit();
+  projects = initializeProjects(state, {
+    isBusy: () => gestureInProgress,
+    beforeAction: () => {
+      if (document.activeElement?.matches('input, textarea, select')) document.activeElement.blur();
+      commit();
+    },
+    onRename: commit,
+    getViewport: () => ({ scrollLeft: elements.viewport.scrollLeft, scrollTop: elements.viewport.scrollTop }),
+    onLoad: record => {
+      history.reset();
+      deviceSelector.value = state.project.device;
+      document.getElementById('show-grid').checked = state.view.showGrid;
+      document.getElementById('snap-grid').checked = state.view.snapToGrid;
+      refreshElements();
+      if (record) render(); else fit();
+      elements.viewport.scrollLeft = record?.editor.scrollLeft ?? 0;
+      elements.viewport.scrollTop = record?.editor.scrollTop ?? 0;
+    },
+  });
 }

@@ -10,12 +10,12 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="./" aria-label="Wirefrapp, inicio"><span class="brand-mark" aria-hidden="true">▦</span> Wirefrapp<span class="badge">MVP</span></a>
-    <div class="project-area"><span class="project-name">Proyecto sin título</span><span class="project-status">Sin guardar · etapa 5</span></div>
+    <span class="brand" aria-label="Wirefrapp"><span class="brand-mark" aria-hidden="true">▦</span> Wirefrapp<span class="badge">MVP</span></span>
+    <div class="project-area"><span id="project-name" class="project-name">Proyecto sin título</span><span id="project-status" class="project-status" role="status">Proyecto nuevo · sin guardar</span></div>
     <div class="toolbar-group" aria-label="Gestión de proyectos">
-      <button disabled title="Disponible en una próxima etapa">Nuevo</button>
-      <button disabled>Abrir</button><button disabled>Renombrar</button><button disabled>Eliminar</button>
-      <button class="primary" disabled>Guardar</button>
+      <button id="new-project">Nuevo</button>
+      <button id="open-project">Abrir</button><button id="rename-project">Renombrar</button><button id="delete-project">Eliminar</button>
+      <button id="save-project" class="primary" title="Guardar · Ctrl+S">Guardar</button>
     </div>
   </header>
   <main class="editor">
@@ -56,6 +56,14 @@
         <button value="no" autofocus>No</button>
         <button value="yes" class="confirm-device-change">Sí, cambiar tamaño</button>
       </div>
+    </form>
+  </dialog>
+  <dialog id="project-dialog" class="device-dialog" aria-labelledby="project-dialog-title" aria-describedby="project-dialog-message">
+    <form method="dialog">
+      <h2 id="project-dialog-title"></h2>
+      <p id="project-dialog-message"></p>
+      <div id="project-dialog-content" class="project-dialog-content"></div>
+      <div id="project-dialog-actions" class="dialog-actions"></div>
     </form>
   </dialog>
 </body>

@@ -1,10 +1,17 @@
 import { moveGeometry } from './geometry.js';
-import { DEVICE_SIZES, ZOOM, DUPLICATE_OFFSET } from './config.js';
+import { DEVICE_SIZES, ZOOM, DUPLICATE_OFFSET, PROJECT_VERSION, DEFAULT_PROJECT_NAME } from './config.js';
 import { COMPONENT_TYPES, createComponent } from './components.js';
+
+export function createProject(name = DEFAULT_PROJECT_NAME, device = 'desktop') {
+  return {
+    id: crypto.randomUUID(), version: PROJECT_VERSION, name, device,
+    createdAt: new Date().toISOString(), elements: [],
+  };
+}
 
 export function createEditorState() {
   return {
-    project: { name: 'Proyecto sin título', device: 'desktop', elements: [] },
+    project: createProject(),
     view: { zoom: ZOOM.initial, showGrid: false, snapToGrid: false },
     selectedElementId: null,
   };

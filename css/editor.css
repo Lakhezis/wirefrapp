@@ -80,7 +80,7 @@ fieldset input, textarea { width: 100%; min-width: 0; padding: 7px; border: 1px 
 @page { margin: 10mm; }
 @media print {
   html, body { display: block; width: auto; height: auto; min-height: 0; margin: 0; padding: 0; background: white; }
-  .topbar, .panel, .canvas-toolbar, .grid-toolbar, .workspace-status, .device-dialog { display: none !important; }
+  .topbar, .panel, .canvas-toolbar, .grid-toolbar, .workspace-status, dialog { display: none !important; }
   .editor, .workspace, .canvas-viewport { display: block; width: auto; height: auto; min-height: 0; padding: 0; margin: 0; overflow: visible; background: white; border: 0; }
   .canvas-frame { width: var(--print-width) !important; height: var(--print-height) !important; margin: 0 auto; overflow: hidden; box-shadow: none; break-inside: avoid; }
   .wireframe-canvas { transform: scale(var(--print-scale)) !important; background: white !important; border: 0; outline: 0; box-shadow: none; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
@@ -104,3 +104,12 @@ fieldset select { width: 100%; min-width: 0; }
 fieldset input[type="color"] { height: 34px; padding: 3px; cursor: pointer; }
 .transparent-option { grid-column: 1 / -1; flex-direction: row; align-items: center; }
 .transparent-option input { width: auto; }
+
+.primary { background: var(--color-rose); }
+.project-status.has-changes { color: var(--color-old-rose); }
+.project-status.has-error { color: var(--color-old-rose); font-weight: 650; }
+.project-name { overflow-wrap: anywhere; }
+.project-dialog-content label { display: flex; flex-direction: column; gap: 6px; margin: 12px 0; color: var(--color-muted); }
+.project-dialog-content input { width: 100%; padding: 8px; border: 1px solid var(--color-border); border-radius: 7px; background: var(--color-background); color: var(--color-text); font: inherit; }
+.project-dialog-content select { width: 100%; min-width: 0; }
+#project-dialog .dialog-actions { flex-wrap: wrap; margin-top: 22px; }

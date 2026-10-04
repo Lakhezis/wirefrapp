@@ -7,7 +7,7 @@ export const DEVICE_SIZES = Object.freeze({
 export const GRID_SIZE = 16;
 export const ZOOM = Object.freeze({ min: 0.1, max: 2, step: 0.1, initial: 0.5 });
 
-// Guardar se conectará en la etapa de persistencia.
+// Referencia de los atajos del editor.
 export const PLANNED_SHORTCUTS = Object.freeze({
   undo: 'Ctrl+Z', redo: 'Ctrl+Shift+Z', duplicate: 'Ctrl+D',
   delete: 'Delete', move: 'Arrow', moveFast: 'Shift+Arrow', save: 'Ctrl+S',
@@ -23,3 +23,8 @@ export const STYLE_LIMITS = Object.freeze({
 });
 
 export const HISTORY_LIMIT = 50;
+
+export const PROJECT_VERSION = 1;
+export const STORAGE_KEY = 'wirefrapp.projects';
+export const DEFAULT_PROJECT_NAME = 'Proyecto sin título';
+export const PROJECT_NAME_LIMIT = 80;
