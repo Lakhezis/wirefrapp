@@ -91,5 +91,13 @@ function addResizeHandles(node) {
 export function updateElementGeometry(canvas, element) {
   const node = canvas.querySelector(`[data-element-id="${element.id}"]`);
   if (!node) return;
-  Object.assign(node.style, { left: `${element.x}px`, top: `${element.y}px`, width: `${element.width}px`, height: `${element.height}px` });
+  Object.assign(node.style, { left: `${element.x}px`, top: `${element.y}px`, width: `${element.width}px`, height: `${element.height}px`, borderWidth: `${element.styles.borderWidth}px` });
+}
+
+export function updateElementAppearance(state, canvas) {
+  const element = state.project.elements.find(item => item.id === state.selectedElementId);
+  if (!element) return;
+  const node = canvas.querySelector(`[data-element-id="${element.id}"]`);
+  if (node) node.replaceWith(renderComponent(element));
+  renderSelection(state, canvas);
 }

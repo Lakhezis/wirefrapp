@@ -46,3 +46,6 @@
 .handle-sw { left: 0; bottom: 0; transform: translate(-50%, 50%); cursor: nesw-resize; }
 .handle-w { left: 0; top: 50%; transform: translate(-50%, -50%); cursor: ew-resize; }
 @media print { .resize-handle { display: none !important; } }
+
+.component-button .component-field, .component-choice { justify-content: var(--text-justify, flex-start); }
+.component-image .component-image { align-items: var(--text-justify, center); padding: 8px; }

@@ -3,7 +3,8 @@ const COMMON_STYLES = {
   borderColor: '#a0a0a0', borderWidth: 1, borderRadius: 0, color: '#333333',
 };
 const GEOMETRY_PROPERTIES = ['x', 'y', 'width', 'height'];
-const TEXT_PROPERTIES = [...GEOMETRY_PROPERTIES, 'content', 'fontSize', 'textAlign'];
+const APPEARANCE_PROPERTIES = ['backgroundColor', 'borderColor', 'borderWidth', 'borderRadius'];
+const TEXT_PROPERTIES = [...GEOMETRY_PROPERTIES, 'content', 'fontSize', 'textAlign', ...APPEARANCE_PROPERTIES];
 
 function defineComponent(name, icon, width, height, content, styles, render, editableProperties = TEXT_PROPERTIES) {
   return {
@@ -100,6 +101,7 @@ export function renderComponent(element) {
     borderColor: element.styles.borderColor, borderWidth: `${element.styles.borderWidth}px`,
     borderRadius: `${element.styles.borderRadius}px`,
   });
+  wrapper.style.setProperty('--text-justify', { left: 'flex-start', center: 'center', right: 'flex-end' }[element.styles.textAlign]);
   wrapper.append(definition.render(element));
   return wrapper;
 }

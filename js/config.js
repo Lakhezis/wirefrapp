@@ -15,3 +15,9 @@ export const PLANNED_SHORTCUTS = Object.freeze({
 
 export const MIN_ELEMENT_SIZE = 24;
 export const DUPLICATE_OFFSET = 24;
+
+export const STYLE_LIMITS = Object.freeze({
+  fontSize: { min: 8, max: 96 },
+  borderWidth: { min: 0, max: 20 },
+  borderRadius: { min: 0, max: 200 },
+});

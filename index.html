@@ -11,7 +11,7 @@
 <body>
   <header class="topbar">
     <a class="brand" href="./" aria-label="Wirefrapp, inicio"><span class="brand-mark" aria-hidden="true">▦</span> Wirefrapp<span class="badge">MVP</span></a>
-    <div class="project-area"><span class="project-name">Proyecto sin título</span><span class="project-status">Sin guardar · etapa 3</span></div>
+    <div class="project-area"><span class="project-name">Proyecto sin título</span><span class="project-status">Sin guardar · etapa 4</span></div>
     <div class="toolbar-group" aria-label="Gestión de proyectos">
       <button disabled title="Disponible en una próxima etapa">Nuevo</button>
       <button disabled>Abrir</button><button disabled>Renombrar</button><button disabled>Eliminar</button>
@@ -30,7 +30,7 @@
         <div class="toolbar-group history-controls"><button disabled aria-label="Deshacer" title="Deshacer · Ctrl+Z">↶ <span>Undo</span></button><button disabled aria-label="Rehacer" title="Rehacer · Ctrl+Shift+Z">↷ <span>Redo</span></button></div>
         <div class="toolbar-group zoom-controls"><button id="zoom-out" aria-label="Alejar">−</button><output id="zoom-value" aria-live="polite">50%</output><button id="zoom-in" aria-label="Acercar">+</button><button id="zoom-fit">Ajustar</button></div>
       </div>
-      <div class="grid-toolbar"><label><input id="show-grid" type="checkbox"> Mostrar cuadrícula</label><label title="Se aplicará al mover componentes en una próxima etapa"><input id="snap-grid" type="checkbox"> Ajustar a cuadrícula</label><span id="grid-size"></span></div>
+      <div class="grid-toolbar"><label><input id="show-grid" type="checkbox"> Mostrar cuadrícula</label><label title="Ajustar al arrastrar y redimensionar"><input id="snap-grid" type="checkbox"> Ajustar a cuadrícula</label><span id="grid-size"></span></div>
       <div id="canvas-viewport" class="canvas-viewport">
         <div id="canvas-frame" class="canvas-frame"><div id="canvas" class="wireframe-canvas" role="region" aria-label="Lienzo de wireframe"></div></div>
       </div>
@@ -39,10 +39,11 @@
     <aside class="panel properties-panel" aria-labelledby="properties-title">
       <div class="panel-heading"><h2 id="properties-title">Propiedades</h2><p>Un lugar para cada detalle.</p></div>
       <div id="selection-empty" class="selection-empty"><span aria-hidden="true">⌖</span><strong>Ningún elemento seleccionado</strong><p>Seleccioná un elemento para editar sus propiedades.</p></div>
-      <div id="selection-info" class="selection-info" hidden><strong id="selected-type"></strong><span class="property-caption">ID</span><code id="selected-id"></code><p class="panel-note">Propiedades informativas · edición próximamente</p></div>
-      <fieldset disabled><legend>Posición y tamaño</legend><div class="property-grid"><label>X<input id="property-x" type="number" placeholder="—"></label><label>Y<input id="property-y" type="number" placeholder="—"></label><label>Ancho<input id="property-width" type="number" placeholder="—"></label><label>Alto<input id="property-height" type="number" placeholder="—"></label></div></fieldset>
+      <div id="selection-info" class="selection-info" hidden><strong id="selected-type"></strong><span class="property-caption">ID</span><code id="selected-id"></code><p class="panel-note">Los cambios se muestran al instante.</p></div>
+      <fieldset id="geometry-properties" disabled><legend>Posición y tamaño</legend><div class="property-grid"><label>X<input id="property-x" type="number" placeholder="—"></label><label>Y<input id="property-y" type="number" placeholder="—"></label><label>Ancho<input id="property-width" type="number" placeholder="—"></label><label>Alto<input id="property-height" type="number" placeholder="—"></label></div></fieldset>
       <fieldset id="content-properties" disabled><legend>Contenido</legend><label>Texto<textarea id="property-content" rows="3" placeholder="Seleccioná un componente"></textarea></label></fieldset>
-      <fieldset disabled><legend>Alineación en el lienzo</legend><div class="alignment-tools"><button aria-label="Alinear a la izquierda" title="Izquierda">⇤</button><button aria-label="Centrar horizontalmente" title="Centro horizontal">↔</button><button aria-label="Alinear a la derecha" title="Derecha">⇥</button><button aria-label="Alinear arriba" title="Arriba">↥</button><button aria-label="Centrar verticalmente" title="Centro vertical">↕</button><button aria-label="Alinear abajo" title="Abajo">↧</button></div></fieldset>
+      <fieldset id="style-properties" disabled><legend>Estilo</legend><div id="style-fields" class="property-grid"></div></fieldset>
+      <fieldset id="alignment-properties" disabled><legend>Alineación en el lienzo</legend><div class="alignment-tools"><button data-alignment="left" aria-label="Alinear a la izquierda" title="Izquierda">⇤</button><button data-alignment="center-x" aria-label="Centrar horizontalmente" title="Centro horizontal">↔</button><button data-alignment="right" aria-label="Alinear a la derecha" title="Derecha">⇥</button><button data-alignment="top" aria-label="Alinear arriba" title="Arriba">↥</button><button data-alignment="center-y" aria-label="Centrar verticalmente" title="Centro vertical">↕</button><button data-alignment="bottom" aria-label="Alinear abajo" title="Abajo">↧</button></div></fieldset>
       <fieldset><legend>Acciones</legend><div class="toolbar-group"><button id="duplicate-element" disabled title="Ctrl+D">Duplicar</button><button id="delete-element" disabled title="Delete">Eliminar</button></div></fieldset>
       <p class="panel-note">Para guardar una vista en PDF, usá Ctrl+P y elegí “Guardar como PDF”.</p>
     </aside>

@@ -99,3 +99,8 @@ fieldset input, textarea { width: 100%; min-width: 0; padding: 7px; border: 1px 
 .device-dialog p { margin: 12px 0 22px; color: var(--color-muted); }
 .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; }
 .confirm-device-change { background: var(--color-rose); }
+
+fieldset select { width: 100%; min-width: 0; }
+fieldset input[type="color"] { height: 34px; padding: 3px; cursor: pointer; }
+.transparent-option { grid-column: 1 / -1; flex-direction: row; align-items: center; }
+.transparent-option input { width: auto; }

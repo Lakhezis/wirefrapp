@@ -1,6 +1,6 @@
 # Wirefrapp
 
-Editor local de wireframes con HTML, CSS y JavaScript nativo. Esta versión implementa las etapas 1 a 3: base visual, componentes básicos, selección y manipulación. No requiere dependencias ni compilación.
+Editor local de wireframes con HTML, CSS y JavaScript nativo. Esta versión implementa las etapas 1 a 4: base visual, componentes básicos, selección, manipulación y edición de propiedades. No requiere dependencias ni compilación.
 
 ## Ejecutar localmente
 
@@ -33,7 +33,7 @@ Elegir “Guardar como PDF”, papel A4 y desactivar los encabezados y pies de p
 
 ## Controles preparados
 
-Gestión de proyectos, guardado, Undo/Redo, edición de propiedades, alineación están deshabilitados. Navbar, Sidebar, Card, Formulario, Tabla y Footer siguen visibles como próximos. Todavía no se implementan historial ni persistencia. Los componentes son representaciones visuales: sus botones y campos se seleccionan, pero no funcionan como un formulario real. Ctrl+D (Cmd+D en macOS) duplica, Delete elimina, las flechas mueven 1 px y Shift+flechas mueven 10 px. Los atajos se ignoran dentro de campos y diálogos. Deshacer, rehacer y guardar todavía no están conectados.
+Gestión de proyectos, guardado y Undo/Redo están deshabilitados. Navbar, Sidebar, Card, Formulario, Tabla y Footer siguen visibles como próximos. Todavía no se implementan historial ni persistencia. Los componentes son representaciones visuales: sus botones y campos se seleccionan, pero no funcionan como un formulario real. Ctrl+D (Cmd+D en macOS) duplica, Delete elimina, las flechas mueven 1 px y Shift+flechas mueven 10 px. Los atajos se ignoran dentro de campos y diálogos. Deshacer, rehacer y guardar todavía no están conectados.
 
 ## Organización
 
@@ -45,10 +45,10 @@ Gestión de proyectos, guardado, Undo/Redo, edición de propiedades, alineación
 - `js/state.js`: datos del proyecto, creación de instancias con ID único, posiciones iniciales y selección, sin persistencia.
 - `js/components.js`: catálogo centralizado, valores iniciales, propiedades editables previstas, creación de datos y representación visual de cada tipo.
 - `js/canvas.js`: dimensiones, cuadrícula, escala, representación de elementos, eventos de selección y disposición impresa.
-- `js/properties.js`: información del elemento seleccionado, en modo lectura.
+- `js/properties.js`: edición, validación y presentación de propiedades según el tipo seleccionado.
 - `js/ui.js`: eventos de los controles activos.
 
-Los módulos de alineación, historial, almacenamiento y proyectos se crearán cuando se implementen sus respectivas etapas. No existe módulo de exportación ni librerías externas.
+Los módulos de historial, almacenamiento y proyectos se crearán cuando se implementen sus respectivas etapas. No existe módulo de exportación ni librerías externas.
 
 ## Estado y representación
 
@@ -64,3 +64,13 @@ Duplicar crea un ID nuevo y copia independiente de estilos, con desplazamiento l
 
 - `js/geometry.js`: cálculos de movimiento, redimensionamiento, límites y cuadrícula.
 - `js/interactions.js`: gestos de puntero y atajos de manipulación.
+
+## Propiedades y alineación
+
+El panel permite editar posición, tamaño, contenido y estilos disponibles en el catálogo de cada tipo. Los cambios se ven al escribir. Campos vacíos o valores inválidos no modifican el estado; al confirmar se muestran los valores válidos. Las posiciones y dimensiones se limitan al lienzo, con los mismos tamaños mínimos que los tiradores. La fuente admite de 8 a 96 px, el borde de 0 a 20 px (limitado además por el tamaño del elemento), y el radio de 0 a 200 px. Estos límites están en config.js. El fondo puede ser transparente mediante “Sin fondo”.
+
+Las seis herramientas alinean el componente respecto del lienzo y conservan su tamaño. La edición numérica y la alineación usan posiciones exactas, independientemente de la cuadrícula. Las propiedades de texto se ocultan en formas sin contenido.
+
+- `js/alignment.js`: calcula cambios para una lista de elementos, preparada para selección múltiple futura.
+
+El historial y el guardado permanecen pendientes.

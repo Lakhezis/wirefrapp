@@ -21,7 +21,7 @@ export function initializePointerInteractions(state, canvas, onSelection, onGeom
     node.focus({ preventScroll: true });
     gesture = {
       pointerId: event.pointerId, direction,
-      start: { ...getSelectedElement(state) },
+      start: { ...getSelectedElement(state), styles: { ...getSelectedElement(state).styles } },
       clientX: event.clientX, clientY: event.clientY,
       scrollLeft: canvas.parentElement.parentElement.scrollLeft,
       scrollTop: canvas.parentElement.parentElement.scrollTop,
@@ -52,10 +52,11 @@ export function initializePointerInteractions(state, canvas, onSelection, onGeom
     suppressClick = true;
     canvas.releasePointerCapture(event.pointerId);
   });
-  canvas.addEventListener('pointercancel', () => {
-    if (!gesture) return;
+  canvas.addEventListener('pointercancel', event => {
+    if (!gesture || event.pointerId !== gesture.pointerId) return;
     const { x, y, width, height } = gesture.start;
     updateSelectedGeometry(state, { x, y, width, height });
+    getSelectedElement(state).styles.borderWidth = gesture.start.styles.borderWidth;
     gesture = null;
     onGeometryChange();
   });

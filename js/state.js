@@ -74,5 +74,8 @@ export function deleteSelectedElement(state) {
 
 export function updateSelectedGeometry(state, geometry) {
   const element = getSelectedElement(state);
-  if (element) Object.assign(element, geometry);
+  if (element) {
+    Object.assign(element, geometry);
+    element.styles.borderWidth = Math.min(element.styles.borderWidth, Math.floor(Math.min(element.width, element.height) / 2));
+  }
 }

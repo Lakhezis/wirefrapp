@@ -1,8 +1,10 @@
+import { getAlignmentChanges } from './alignment.js';
+import { DEVICE_SIZES } from './config.js';
 import { initializePointerInteractions, initializeShortcuts } from './interactions.js';
 import { ZOOM } from './config.js';
-import { clampZoom, fitZoom, renderCanvas, renderCanvasElements, renderSelection, initializeCanvasSelection, updateElementGeometry } from './canvas.js';
-import { addComponent, selectElement, changeDevice, getSelectedElement, duplicateSelectedElement, deleteSelectedElement } from './state.js';
-import { renderProperties } from './properties.js';
+import { clampZoom, fitZoom, renderCanvas, renderCanvasElements, renderSelection, initializeCanvasSelection, updateElementGeometry, updateElementAppearance } from './canvas.js';
+import { addComponent, selectElement, changeDevice, getSelectedElement, duplicateSelectedElement, deleteSelectedElement, updateSelectedGeometry } from './state.js';
+import { renderProperties, initializeProperties } from './properties.js';
 
 export function initializeControls(state) {
   const elements = {
@@ -33,6 +35,15 @@ export function initializeControls(state) {
     delete: () => { deleteSelectedElement(state); refreshElements(); },
     geometryChange,
   };
+  initializeProperties(state, () => updateElementAppearance(state, elements.canvas));
+  document.getElementById('alignment-properties').addEventListener('click', event => {
+    const button = event.target.closest('[data-alignment]');
+    const selected = getSelectedElement(state);
+    if (!button || !selected) return;
+    const [change] = getAlignmentChanges([selected], button.dataset.alignment, DEVICE_SIZES[state.project.device]);
+    updateSelectedGeometry(state, change.geometry);
+    geometryChange();
+  });
   document.getElementById('duplicate-element').addEventListener('click', actions.duplicate);
   document.getElementById('delete-element').addEventListener('click', actions.delete);
   initializePointerInteractions(state, elements.canvas, updateSelection, geometryChange);

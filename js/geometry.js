@@ -26,3 +26,17 @@ export function resizeGeometry(start, direction, dx, dy, bounds, snapToGrid = fa
   if (direction.includes('s')) bottom = clamp(coordinate(bottom + dy), top + minHeight, bounds.height);
   return { x: left, y: top, width: right - left, height: bottom - top };
 }
+
+export function editGeometry(element, property, value, bounds) {
+  if (!Number.isFinite(value)) return null;
+  if (property === 'x' || property === 'y') {
+    return moveGeometry(element, property === 'x' ? value : element.x, property === 'y' ? value : element.y, bounds);
+  }
+  const defaults = COMPONENT_TYPES[element.type].defaults;
+  if (property === 'width' || property === 'height') {
+    const origin = property === 'width' ? element.x : element.y;
+    const minimum = Math.min(MIN_ELEMENT_SIZE, defaults[property]);
+    return { [property]: clamp(Math.round(value), minimum, bounds[property] - origin) };
+  }
+  return null;
+}
