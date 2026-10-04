@@ -47,5 +47,15 @@
       <p class="panel-note">Para guardar una vista en PDF, usá Ctrl+P y elegí “Guardar como PDF”.</p>
     </aside>
   </main>
+  <dialog id="device-change-dialog" class="device-dialog" aria-labelledby="device-change-title" aria-describedby="device-change-message">
+    <form method="dialog">
+      <h2 id="device-change-title">¿Cambiar el tamaño del lienzo?</h2>
+      <p id="device-change-message">Si modificás el tamaño, se eliminarán todos los componentes del lienzo. ¿Deseás cambiarlo de todos modos?</p>
+      <div class="dialog-actions">
+        <button value="no" autofocus>No</button>
+        <button value="yes" class="confirm-device-change">Sí, cambiar tamaño</button>
+      </div>
+    </form>
+  </dialog>
 </body>
 </html>

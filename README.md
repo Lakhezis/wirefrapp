@@ -23,7 +23,9 @@ Abrir http://127.0.0.1:8000 en el navegador. Para detener el servidor, presionar
 - Consultar tipo, ID, posición, tamaño y contenido en el panel de propiedades.
 - Impresión del lienzo con Ctrl+P (Cmd+P en macOS), sin interfaz, cuadrícula ni contorno de selección.
 
-El cambio de dispositivo cambia únicamente las dimensiones del lienzo y ajusta el zoom de la vista. No modifica los datos de los elementos. Las posiciones iniciales se escalonan dentro del área compartida por los tres dispositivos. Las instancias pueden superponerse; moverlas corresponde a una etapa posterior.
+Al cambiar de dispositivo aparece una advertencia con las opciones Sí y No. Confirmar elimina todos los componentes, limpia la selección, cambia las dimensiones y ajusta el zoom. Elegir No o presionar Escape conserva el dispositivo, los elementos, la selección y el zoom. Se solicita confirmación tanto al pasar a un tamaño menor como a uno mayor, incluso si el lienzo está vacío. El nombre del proyecto y las preferencias de cuadrícula se conservan.
+
+Las posiciones iniciales de los componentes se escalonan dentro del lienzo. Las instancias pueden superponerse; moverlas corresponde a una etapa posterior.
 
 ## Impresión
 

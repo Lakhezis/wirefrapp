@@ -1,6 +1,6 @@
 import { ZOOM } from './config.js';
 import { clampZoom, fitZoom, renderCanvas, renderCanvasElements, renderSelection, initializeCanvasSelection } from './canvas.js';
-import { addComponent, selectElement } from './state.js';
+import { addComponent, selectElement, changeDevice } from './state.js';
 import { renderProperties } from './properties.js';
 
 export function initializeControls(state) {
@@ -29,9 +29,25 @@ export function initializeControls(state) {
   renderCanvasElements(state, elements.canvas);
   renderProperties(state);
   const fit = () => { state.view.zoom = fitZoom(state, elements.viewport); render(); };
-  document.getElementById('device').addEventListener('change', event => {
-    state.project.device = event.target.value;
-    fit();
+  const deviceSelector = document.getElementById('device');
+  const deviceDialog = document.getElementById('device-change-dialog');
+  let pendingDevice = null;
+  deviceSelector.addEventListener('change', () => {
+    const requestedDevice = deviceSelector.value;
+    deviceSelector.value = state.project.device;
+    if (requestedDevice === state.project.device) return;
+    pendingDevice = requestedDevice;
+    deviceDialog.returnValue = 'no';
+    deviceDialog.showModal();
+  });
+  deviceDialog.addEventListener('close', () => {
+    if (deviceDialog.returnValue === 'yes' && changeDevice(state, pendingDevice)) {
+      deviceSelector.value = state.project.device;
+      renderCanvasElements(state, elements.canvas);
+      renderProperties(state);
+      fit();
+    }
+    pendingDevice = null;
   });
   elements.zoomOut.addEventListener('click', () => {
     state.view.zoom = clampZoom(Number((state.view.zoom - ZOOM.step).toFixed(3))); render();

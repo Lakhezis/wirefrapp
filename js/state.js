@@ -18,7 +18,7 @@ function createElementId(elements) {
 }
 
 function getInitialPosition(state, dimensions) {
-  // Área compartida: cambiar de dispositivo nunca necesita mover los elementos existentes.
+  // Las posiciones iniciales caben en cualquiera de los tamaños disponibles.
   const sizes = Object.values(DEVICE_SIZES);
   const width = Math.min(...sizes.map(size => size.width));
   const height = Math.min(...sizes.map(size => size.height));
@@ -44,4 +44,12 @@ export function selectElement(state, id) {
 
 export function getSelectedElement(state) {
   return state.project.elements.find(element => element.id === state.selectedElementId) ?? null;
+}
+
+export function changeDevice(state, device) {
+  if (!DEVICE_SIZES[device] || device === state.project.device) return false;
+  state.project.device = device;
+  state.project.elements = [];
+  state.selectedElementId = null;
+  return true;
 }
