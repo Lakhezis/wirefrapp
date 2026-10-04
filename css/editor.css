@@ -79,10 +79,17 @@ fieldset input, textarea { width: 100%; min-width: 0; padding: 7px; border: 1px 
 }
 @page { margin: 10mm; }
 @media print {
-  html, body { display: block; width: auto; height: auto; margin: 0; padding: 0; background: white; }
+  html, body { display: block; width: auto; height: auto; min-height: 0; margin: 0; padding: 0; background: white; }
   .topbar, .panel, .canvas-toolbar, .grid-toolbar, .workspace-status { display: none !important; }
   .editor, .workspace, .canvas-viewport { display: block; width: auto; height: auto; min-height: 0; padding: 0; margin: 0; overflow: visible; background: white; border: 0; }
-  .canvas-frame { width: var(--print-width) !important; height: var(--print-height) !important; margin: 0 auto; box-shadow: none; break-inside: avoid; }
+  .canvas-frame { width: var(--print-width) !important; height: var(--print-height) !important; margin: 0 auto; overflow: hidden; box-shadow: none; break-inside: avoid; }
   .wireframe-canvas { transform: scale(var(--print-scale)) !important; background: white !important; border: 0; outline: 0; box-shadow: none; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
   .selection-indicator, .resize-handle, .canvas-control { display: none !important; }
 }
+
+[hidden] { display: none !important; }
+.selection-info { margin-bottom: 20px; }
+.selection-info strong { display: block; font-size: 13px; }
+.property-caption { display: block; margin-top: 8px; font-size: 10px; color: var(--color-muted); }
+.selection-info code { display: block; font-size: 10px; overflow-wrap: anywhere; color: var(--color-muted); }
+.selection-info .panel-note { margin-top: 10px; }

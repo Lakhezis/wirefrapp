@@ -1,6 +1,6 @@
 # Wirefrapp
 
-Editor local de wireframes con HTML, CSS y JavaScript nativo. Esta versión implementa únicamente la etapa 1: base visual y estructural. No requiere dependencias ni compilación.
+Editor local de wireframes con HTML, CSS y JavaScript nativo. Esta versión implementa las etapas 1 y 2: base visual, componentes básicos y selección. No requiere dependencias ni compilación.
 
 ## Ejecutar localmente
 
@@ -18,9 +18,12 @@ Abrir http://127.0.0.1:8000 en el navegador. Para detener el servidor, presionar
 - Zoom entre 10% y 200%, ajuste al espacio disponible y desplazamiento del área de diseño.
 - Mostrar u ocultar la cuadrícula de 16 px.
 - Activar la preferencia de ajuste a cuadrícula. Todavía no tiene efecto sobre elementos.
-- Impresión del lienzo con Ctrl+P (Cmd+P en macOS), sin interfaz ni cuadrícula.
+- Agregar Texto, Título, Botón, Input, Textarea, Checkbox, Radio button, Imagen placeholder, Rectángulo y Línea.
+- Seleccionar una instancia con un clic (o Enter/Espacio al enfocarla), y deseleccionar haciendo clic en el fondo del lienzo.
+- Consultar tipo, ID, posición, tamaño y contenido en el panel de propiedades.
+- Impresión del lienzo con Ctrl+P (Cmd+P en macOS), sin interfaz, cuadrícula ni contorno de selección.
 
-El cambio de dispositivo cambia únicamente las dimensiones del lienzo y ajusta el zoom de la vista. No modifica los datos de los elementos. El lienzo está vacío en esta etapa.
+El cambio de dispositivo cambia únicamente las dimensiones del lienzo y ajusta el zoom de la vista. No modifica los datos de los elementos. Las posiciones iniciales se escalonan dentro del área compartida por los tres dispositivos. Las instancias pueden superponerse; moverlas corresponde a una etapa posterior.
 
 ## Impresión
 
@@ -28,7 +31,7 @@ Elegir “Guardar como PDF”, papel A4 y desactivar los encabezados y pies de p
 
 ## Controles preparados
 
-Gestión de proyectos, guardado, Undo/Redo, catálogo, propiedades, alineación, duplicación y eliminación están deshabilitados. No se implementan componentes, arrastre, redimensionamiento, historial ni persistencia. Los atajos futuros están documentados en config.js y todavía no interceptan teclas.
+Gestión de proyectos, guardado, Undo/Redo, edición de propiedades, alineación, duplicación y eliminación están deshabilitados. Navbar, Sidebar, Card, Formulario, Tabla y Footer siguen visibles como próximos. No se implementan arrastre, redimensionamiento, historial ni persistencia. Los componentes son representaciones visuales: sus botones y campos se seleccionan, pero no funcionan como un formulario real. Los atajos futuros están documentados en config.js y todavía no interceptan teclas.
 
 ## Organización
 
@@ -37,9 +40,16 @@ Gestión de proyectos, guardado, Undo/Redo, catálogo, propiedades, alineación,
 - `css/components.css`: catálogo visual y paleta neutral reservada para componentes.
 - `js/app.js`: inicio y conexión de módulos.
 - `js/config.js`: tamaños de dispositivo, cuadrícula, zoom y atajos previstos.
-- `js/state.js`: estado inicial del proyecto y preferencias de vista, sin persistencia.
-- `js/components.js`: catálogo y representación de sus botones deshabilitados.
-- `js/canvas.js`: dimensiones, cuadrícula, escala del lienzo y disposición impresa.
+- `js/state.js`: datos del proyecto, creación de instancias con ID único, posiciones iniciales y selección, sin persistencia.
+- `js/components.js`: catálogo centralizado, valores iniciales, propiedades editables previstas, creación de datos y representación visual de cada tipo.
+- `js/canvas.js`: dimensiones, cuadrícula, escala, representación de elementos, eventos de selección y disposición impresa.
+- `js/properties.js`: información del elemento seleccionado, en modo lectura.
 - `js/ui.js`: eventos de los controles activos.
 
-Los módulos de propiedades, alineación, historial, almacenamiento y proyectos se crearán cuando se implementen sus respectivas etapas. No existe módulo de exportación ni librerías externas.
+Los módulos de alineación, historial, almacenamiento y proyectos se crearán cuando se implementen sus respectivas etapas. No existe módulo de exportación ni librerías externas.
+
+## Estado y representación
+
+Cada instancia contiene `id`, `type`, `x`, `y`, `width`, `height`, `content` y `styles`. El proyecto guarda una lista de estos objetos, nunca HTML. El DOM se genera desde esa lista. La selección se guarda por separado en `selectedElementId`, por lo que el estilo de selección no forma parte del wireframe. Cada instancia recibe su propia copia de estilos.
+
+Para incorporar otro tipo básico, agregar una definición en `COMPONENT_TYPES` con nombre, icono, valores iniciales, propiedades editables y función de representación. Los textos se insertan con `textContent`. El guardado todavía no está implementado: recargar o cerrar la página descarta el trabajo de esta etapa.

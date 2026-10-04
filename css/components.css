@@ -10,3 +10,27 @@
 .catalog-item { min-height: 65px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 8px 3px; font-size: 10px; }
 .catalog-item:disabled { opacity: 1; background: var(--color-surface); color: var(--color-muted); }
 .catalog-icon { color: var(--component-text); font-size: 21px; line-height: 1; font-weight: 500; }
+
+.wireframe-element {
+  position: absolute;
+  border-style: solid;
+  cursor: pointer;
+  line-height: 1.4;
+  font-family: Arial, sans-serif;
+}
+.component-content { width: 100%; height: 100%; overflow: hidden; pointer-events: none; }
+.component-text { white-space: pre-wrap; overflow-wrap: anywhere; }
+.component-heading { font-weight: 700; }
+.component-field { padding: 9px 12px; }
+.component-button .component-field { display: flex; align-items: center; justify-content: center; padding: 4px 10px; }
+.component-choice { display: flex; align-items: center; gap: 9px; }
+.choice-marker { flex: 0 0 17px; height: 17px; background: var(--component-background); border: 1px solid var(--component-border); }
+.radio-marker { border-radius: 50%; }
+.component-image { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 6px; }
+.placeholder-icon { font-size: 40px; color: var(--component-border); }
+.wireframe-element.is-selected { outline: 2px solid var(--color-old-rose); outline-offset: 2px; }
+/* Amplía el área de clic de una línea fina sin cambiar su tamaño visual. */
+.component-line::before { content: ''; position: absolute; inset: -5px 0; }
+@media print {
+  .wireframe-element, .wireframe-element.is-selected, .wireframe-element:focus-visible { outline: none !important; box-shadow: none !important; }
+}

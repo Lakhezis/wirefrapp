@@ -1,5 +1,7 @@
 import { ZOOM } from './config.js';
-import { clampZoom, fitZoom, renderCanvas } from './canvas.js';
+import { clampZoom, fitZoom, renderCanvas, renderCanvasElements, renderSelection, initializeCanvasSelection } from './canvas.js';
+import { addComponent, selectElement } from './state.js';
+import { renderProperties } from './properties.js';
 
 export function initializeControls(state) {
   const elements = {
@@ -9,6 +11,23 @@ export function initializeControls(state) {
     zoomIn: document.getElementById('zoom-in'), snapStatus: document.getElementById('snap-status'),
   };
   const render = () => renderCanvas(state, elements);
+  const updateSelection = () => {
+    renderSelection(state, elements.canvas);
+    renderProperties(state);
+  };
+  initializeCanvasSelection(elements.canvas, id => {
+    selectElement(state, id);
+    updateSelection();
+  });
+  document.getElementById('component-catalog').addEventListener('click', event => {
+    const button = event.target.closest('[data-component-type]');
+    if (!button || button.disabled) return;
+    addComponent(state, button.dataset.componentType);
+    renderCanvasElements(state, elements.canvas);
+    renderProperties(state);
+  });
+  renderCanvasElements(state, elements.canvas);
+  renderProperties(state);
   const fit = () => { state.view.zoom = fitZoom(state, elements.viewport); render(); };
   document.getElementById('device').addEventListener('change', event => {
     state.project.device = event.target.value;
@@ -27,6 +46,5 @@ export function initializeControls(state) {
   document.getElementById('snap-grid').addEventListener('change', event => {
     state.view.snapToGrid = event.target.checked; render();
   });
-  window.addEventListener('beforeprint', render);
   fit();
 }
