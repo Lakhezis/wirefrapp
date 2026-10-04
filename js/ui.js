@@ -1,6 +1,7 @@
+import { initializePointerInteractions, initializeShortcuts } from './interactions.js';
 import { ZOOM } from './config.js';
-import { clampZoom, fitZoom, renderCanvas, renderCanvasElements, renderSelection, initializeCanvasSelection } from './canvas.js';
-import { addComponent, selectElement, changeDevice } from './state.js';
+import { clampZoom, fitZoom, renderCanvas, renderCanvasElements, renderSelection, initializeCanvasSelection, updateElementGeometry } from './canvas.js';
+import { addComponent, selectElement, changeDevice, getSelectedElement, duplicateSelectedElement, deleteSelectedElement } from './state.js';
 import { renderProperties } from './properties.js';
 
 export function initializeControls(state) {
@@ -14,7 +15,28 @@ export function initializeControls(state) {
   const updateSelection = () => {
     renderSelection(state, elements.canvas);
     renderProperties(state);
+    const hasSelection = Boolean(getSelectedElement(state));
+    document.getElementById('duplicate-element').disabled = !hasSelection;
+    document.getElementById('delete-element').disabled = !hasSelection;
   };
+  const geometryChange = () => {
+    const selected = getSelectedElement(state);
+    if (selected) updateElementGeometry(elements.canvas, selected);
+    renderProperties(state);
+  };
+  const refreshElements = () => {
+    renderCanvasElements(state, elements.canvas);
+    updateSelection();
+  };
+  const actions = {
+    duplicate: () => { duplicateSelectedElement(state); refreshElements(); },
+    delete: () => { deleteSelectedElement(state); refreshElements(); },
+    geometryChange,
+  };
+  document.getElementById('duplicate-element').addEventListener('click', actions.duplicate);
+  document.getElementById('delete-element').addEventListener('click', actions.delete);
+  initializePointerInteractions(state, elements.canvas, updateSelection, geometryChange);
+  initializeShortcuts(state, actions);
   initializeCanvasSelection(elements.canvas, id => {
     selectElement(state, id);
     updateSelection();
@@ -23,11 +45,9 @@ export function initializeControls(state) {
     const button = event.target.closest('[data-component-type]');
     if (!button || button.disabled) return;
     addComponent(state, button.dataset.componentType);
-    renderCanvasElements(state, elements.canvas);
-    renderProperties(state);
+    refreshElements();
   });
-  renderCanvasElements(state, elements.canvas);
-  renderProperties(state);
+  refreshElements();
   const fit = () => { state.view.zoom = fitZoom(state, elements.viewport); render(); };
   const deviceSelector = document.getElementById('device');
   const deviceDialog = document.getElementById('device-change-dialog');
@@ -43,8 +63,7 @@ export function initializeControls(state) {
   deviceDialog.addEventListener('close', () => {
     if (deviceDialog.returnValue === 'yes' && changeDevice(state, pendingDevice)) {
       deviceSelector.value = state.project.device;
-      renderCanvasElements(state, elements.canvas);
-      renderProperties(state);
+      refreshElements();
       fit();
     }
     pendingDevice = null;

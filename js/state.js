@@ -1,4 +1,5 @@
-import { DEVICE_SIZES, ZOOM } from './config.js';
+import { moveGeometry } from './geometry.js';
+import { DEVICE_SIZES, ZOOM, DUPLICATE_OFFSET } from './config.js';
 import { COMPONENT_TYPES, createComponent } from './components.js';
 
 export function createEditorState() {
@@ -52,4 +53,26 @@ export function changeDevice(state, device) {
   state.project.elements = [];
   state.selectedElementId = null;
   return true;
+}
+
+export function duplicateSelectedElement(state) {
+  const selected = getSelectedElement(state);
+  if (!selected) return null;
+  const duplicate = { ...selected, id: createElementId(state.project.elements), styles: { ...selected.styles } };
+  Object.assign(duplicate, moveGeometry(duplicate, selected.x + DUPLICATE_OFFSET, selected.y + DUPLICATE_OFFSET, DEVICE_SIZES[state.project.device], state.view.snapToGrid));
+  state.project.elements.push(duplicate);
+  state.selectedElementId = duplicate.id;
+  return duplicate;
+}
+
+export function deleteSelectedElement(state) {
+  if (!getSelectedElement(state)) return false;
+  state.project.elements = state.project.elements.filter(element => element.id !== state.selectedElementId);
+  state.selectedElementId = null;
+  return true;
+}
+
+export function updateSelectedGeometry(state, geometry) {
+  const element = getSelectedElement(state);
+  if (element) Object.assign(element, geometry);
 }

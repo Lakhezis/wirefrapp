@@ -34,3 +34,15 @@
 @media print {
   .wireframe-element, .wireframe-element.is-selected, .wireframe-element:focus-visible { outline: none !important; box-shadow: none !important; }
 }
+
+.wireframe-element { touch-action: none; user-select: none; cursor: move; }
+.resize-handle { position: absolute; width: 9px; height: 9px; border: 1px solid var(--color-old-rose); background: var(--color-surface); z-index: 1; }
+.handle-nw { left: 0; top: 0; transform: translate(-50%, -50%); cursor: nwse-resize; }
+.handle-n { left: 50%; top: 0; transform: translate(-50%, -50%); cursor: ns-resize; }
+.handle-ne { right: 0; top: 0; transform: translate(50%, -50%); cursor: nesw-resize; }
+.handle-e { right: 0; top: 50%; transform: translate(50%, -50%); cursor: ew-resize; }
+.handle-se { right: 0; bottom: 0; transform: translate(50%, 50%); cursor: nwse-resize; }
+.handle-s { left: 50%; bottom: 0; transform: translate(-50%, 50%); cursor: ns-resize; }
+.handle-sw { left: 0; bottom: 0; transform: translate(-50%, 50%); cursor: nesw-resize; }
+.handle-w { left: 0; top: 50%; transform: translate(-50%, -50%); cursor: ew-resize; }
+@media print { .resize-handle { display: none !important; } }

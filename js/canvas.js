@@ -27,7 +27,7 @@ export function renderCanvas(state, elements) {
   elements.zoomValue.textContent = `${Math.round(zoom * 100)}%`;
   elements.zoomOut.disabled = zoom <= ZOOM.min;
   elements.zoomIn.disabled = zoom >= ZOOM.max;
-  elements.snapStatus.textContent = state.view.snapToGrid ? 'Ajuste activado · disponible al mover elementos' : 'Ajuste a cuadrícula desactivado';
+  elements.snapStatus.textContent = state.view.snapToGrid ? 'Ajuste a cuadrícula activado' : 'Ajuste a cuadrícula desactivado';
   updatePrintLayout(size);
 }
 
@@ -59,6 +59,8 @@ export function renderSelection(state, canvas) {
     const selected = node.dataset.elementId === state.selectedElementId;
     node.classList.toggle('is-selected', selected);
     node.setAttribute('aria-pressed', String(selected));
+    for (const handle of node.querySelectorAll('.resize-handle')) handle.remove();
+    if (selected) addResizeHandles(node);
   }
 }
 
@@ -74,4 +76,20 @@ export function initializeCanvasSelection(canvas, onSelect) {
     event.preventDefault();
     onSelect(element.dataset.elementId);
   });
+}
+
+function addResizeHandles(node) {
+  for (const direction of ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w']) {
+    const handle = document.createElement('span');
+    handle.className = `resize-handle handle-${direction}`;
+    handle.dataset.resizeDirection = direction;
+    handle.setAttribute('aria-hidden', 'true');
+    node.append(handle);
+  }
+}
+
+export function updateElementGeometry(canvas, element) {
+  const node = canvas.querySelector(`[data-element-id="${element.id}"]`);
+  if (!node) return;
+  Object.assign(node.style, { left: `${element.x}px`, top: `${element.y}px`, width: `${element.width}px`, height: `${element.height}px` });
 }
