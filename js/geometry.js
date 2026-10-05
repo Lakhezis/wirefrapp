@@ -12,9 +12,9 @@ export function moveGeometry(element, x, y, bounds, snapToGrid = false) {
 }
 
 export function resizeGeometry(start, direction, dx, dy, bounds, snapToGrid = false) {
-  const defaults = COMPONENT_TYPES[start.type]?.defaults ?? start;
-  const minWidth = Math.min(MIN_ELEMENT_SIZE, defaults.width);
-  const minHeight = Math.min(MIN_ELEMENT_SIZE, defaults.height);
+  const minimum = start.type ? getMinimumSize(start) : { width: Math.min(MIN_ELEMENT_SIZE, start.width), height: Math.min(MIN_ELEMENT_SIZE, start.height) };
+  const minWidth = minimum.width;
+  const minHeight = minimum.height;
   const coordinate = value => Math.round(snapToGrid ? snap(value) : value);
   let left = start.x;
   let right = start.x + start.width;
@@ -32,11 +32,19 @@ export function editGeometry(element, property, value, bounds) {
   if (property === 'x' || property === 'y') {
     return moveGeometry(element, property === 'x' ? value : element.x, property === 'y' ? value : element.y, bounds);
   }
-  const defaults = COMPONENT_TYPES[element.type].defaults;
+  const minimumSize = getMinimumSize(element);
   if (property === 'width' || property === 'height') {
     const origin = property === 'width' ? element.x : element.y;
-    const minimum = Math.min(MIN_ELEMENT_SIZE, defaults[property]);
+    const minimum = minimumSize[property];
     return { [property]: clamp(Math.round(value), minimum, bounds[property] - origin) };
   }
   return null;
+}
+
+export function getMinimumSize(element) {
+  const definition = COMPONENT_TYPES[element.type];
+  return definition.minimumSize ?? {
+    width: Math.min(MIN_ELEMENT_SIZE, definition.defaults.width),
+    height: Math.min(MIN_ELEMENT_SIZE, definition.defaults.height),
+  };
 }

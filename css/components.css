@@ -49,3 +49,12 @@
 
 .component-button .component-field, .component-choice { justify-content: var(--text-justify, flex-start); }
 .component-image .component-image { align-items: var(--text-justify, center); padding: 8px; }
+
+.card-layout { display: flex; flex-direction: column; gap: 10px; padding: 16px; }
+.card-title { flex-shrink: 0; font-weight: 700; font-size: 1.15em; overflow-wrap: anywhere; white-space: pre-wrap; }
+.card-description { flex: 1; min-height: 0; overflow: hidden; white-space: pre-wrap; overflow-wrap: anywhere; }
+.card-button { flex-shrink: 0; align-self: var(--text-justify, flex-start); max-width: 100%; padding: 6px 12px; border: 1px solid var(--component-border); border-radius: 3px; background: var(--component-light); font-size: .85em; white-space: pre-wrap; overflow-wrap: anywhere; }
+.navbar-layout { display: flex; align-items: center; gap: 16px; padding: 12px 16px; }
+.navbar-brand { font-weight: 700; font-size: 1.15em; flex: 0 1 auto; min-width: 0; overflow: hidden; overflow-wrap: anywhere; }
+.navbar-links { flex: 1; min-width: 0; display: flex; justify-content: var(--text-justify, flex-start); align-items: center; flex-wrap: wrap; gap: 6px 12px; overflow: hidden; }
+.navbar-link { white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }

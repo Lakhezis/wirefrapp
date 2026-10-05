@@ -1,5 +1,6 @@
-import { COMPONENT_TYPES } from './components.js';
-import { DEVICE_SIZES, PROJECT_VERSION, STORAGE_KEY, PROJECT_NAME_LIMIT, ZOOM, STYLE_LIMITS, MIN_ELEMENT_SIZE } from './config.js';
+import { getMinimumSize } from './geometry.js';
+import { COMPONENT_TYPES, isValidContent } from './components.js';
+import { DEVICE_SIZES, PROJECT_VERSION, STORAGE_KEY, PROJECT_NAME_LIMIT, ZOOM, STYLE_LIMITS } from './config.js';
 
 const validId = value => typeof value === 'string' && /^[a-zA-Z0-9_-]{1,100}$/.test(value);
 const validDate = value => typeof value === 'string' && Number.isFinite(Date.parse(value));
@@ -17,10 +18,10 @@ export function validateProject(project) {
   for (const element of project.elements) {
     const defaults = COMPONENT_TYPES[element?.type]?.defaults;
     const styles = element?.styles;
-    if (!defaults || !validId(element.id) || ids.has(element.id) || typeof element.content !== 'string' ||
+    if (!defaults || !validId(element.id) || ids.has(element.id) || !isValidContent(element.type, element.content) ||
         ![element.x, element.y, element.width, element.height].every(Number.isInteger) ||
-        !inRange(element.width, Math.min(MIN_ELEMENT_SIZE, defaults.width), bounds.width) ||
-        !inRange(element.height, Math.min(MIN_ELEMENT_SIZE, defaults.height), bounds.height) ||
+        !inRange(element.width, getMinimumSize(element).width, bounds.width) ||
+        !inRange(element.height, getMinimumSize(element).height, bounds.height) ||
         !inRange(element.x, 0, bounds.width - element.width) || !inRange(element.y, 0, bounds.height - element.height) ||
         !styles || !inRange(styles.fontSize, STYLE_LIMITS.fontSize.min, STYLE_LIMITS.fontSize.max) ||
         !inRange(styles.borderWidth, 0, Math.min(STYLE_LIMITS.borderWidth.max, element.width / 2, element.height / 2)) ||

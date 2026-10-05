@@ -1,4 +1,4 @@
-import { COMPONENT_TYPES } from './components.js';
+import { COMPONENT_TYPES, isValidContent } from './components.js';
 import { DEVICE_SIZES, STYLE_LIMITS } from './config.js';
 import { editGeometry } from './geometry.js';
 import { getSelectedElement, updateSelectedGeometry } from './state.js';
@@ -21,7 +21,8 @@ export function applyProperty(state, property, value) {
     if (!geometry) return false;
     updateSelectedGeometry(state, geometry);
   } else if (property === 'content') {
-    element.content = String(value);
+    if (!isValidContent(element.type, value)) return false;
+    element.content = structuredClone(value);
   } else if (STYLE_LIMITS[property]) {
     if (String(value).trim() === '' || !Number.isFinite(Number(value))) return false;
     const { min, max } = STYLE_LIMITS[property];
@@ -55,7 +56,17 @@ export function renderProperties(state) {
   }
   for (const property of ['x', 'y', 'width', 'height']) setFieldValue(`property-${property}`, element?.[property] ?? '');
   document.getElementById('content-properties').hidden = Boolean(element) && !properties.includes('content');
-  setFieldValue('property-content', element?.content ?? '');
+  const fields = element ? COMPONENT_TYPES[element.type].contentFields : null;
+  document.getElementById('basic-content-fields').hidden = Boolean(fields);
+  document.getElementById('block-content-fields').hidden = !fields;
+  document.getElementById('block-content-note').hidden = !fields;
+  setFieldValue('property-content', typeof element?.content === 'string' ? element.content : '');
+  for (const field of document.querySelectorAll('[data-content-key]')) {
+    const relevant = Boolean(element?.type === field.dataset.contentType && fields?.some(definition => definition.key === field.dataset.contentKey));
+    field.parentElement.hidden = !relevant;
+    field.disabled = !relevant;
+    setFieldValue(field.id, relevant ? element.content[field.dataset.contentKey] : '');
+  }
   for (const [property, definition] of Object.entries(STYLE_FIELDS)) {
     document.getElementById(`field-${property}`).hidden = !properties.includes(property);
     const value = element?.styles[property];
@@ -86,6 +97,30 @@ export function initializeProperties(state, onChange, onCommit = () => {}) {
       if (STYLE_LIMITS[property]) Object.assign(field, STYLE_LIMITS[property], { step: 1 });
     }
     label.append(field); container.append(label);
+  }
+  const blockContainer = document.getElementById('block-content-fields');
+  for (const [type, definition] of Object.entries(COMPONENT_TYPES)) {
+    for (const contentField of definition.contentFields ?? []) {
+      const label = document.createElement('label');
+      label.textContent = contentField.label;
+      const field = document.createElement(contentField.type === 'textarea' ? 'textarea' : 'input');
+      if (contentField.type === 'textarea') field.rows = 3;
+      else field.type = 'text';
+      field.id = `content-${type}-${contentField.key}`;
+      field.dataset.contentKey = contentField.key;
+      field.dataset.contentType = type;
+      label.append(field); blockContainer.append(label);
+      const apply = () => {
+        const element = getSelectedElement(state);
+        if (!element || element.type !== type) return;
+        if (applyProperty(state, 'content', { ...element.content, [contentField.key]: field.value })) {
+          onChange(); renderProperties(state);
+        }
+      };
+      field.addEventListener('input', apply);
+      field.addEventListener('change', () => { apply(); onCommit(); });
+      field.addEventListener('blur', onCommit);
+    }
   }
   const transparentLabel = document.createElement('label');
   transparentLabel.className = 'transparent-option';

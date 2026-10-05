@@ -113,3 +113,6 @@ fieldset input[type="color"] { height: 34px; padding: 3px; cursor: pointer; }
 .project-dialog-content input { width: 100%; padding: 8px; border: 1px solid var(--color-border); border-radius: 7px; background: var(--color-background); color: var(--color-text); font: inherit; }
 .project-dialog-content select { width: 100%; min-width: 0; }
 #project-dialog .dialog-actions { flex-wrap: wrap; margin-top: 22px; }
+
+#block-content-fields label { margin-bottom: 10px; }
+#block-content-fields input { width: 100%; }

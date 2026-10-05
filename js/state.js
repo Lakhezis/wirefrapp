@@ -65,7 +65,7 @@ export function changeDevice(state, device) {
 export function duplicateSelectedElement(state) {
   const selected = getSelectedElement(state);
   if (!selected) return null;
-  const duplicate = { ...selected, id: createElementId(state.project.elements), styles: { ...selected.styles } };
+  const duplicate = { ...selected, id: createElementId(state.project.elements), content: structuredClone(selected.content), styles: { ...selected.styles } };
   Object.assign(duplicate, moveGeometry(duplicate, selected.x + DUPLICATE_OFFSET, selected.y + DUPLICATE_OFFSET, DEVICE_SIZES[state.project.device], state.view.snapToGrid));
   state.project.elements.push(duplicate);
   state.selectedElementId = duplicate.id;

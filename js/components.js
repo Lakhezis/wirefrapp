@@ -6,9 +6,9 @@ const GEOMETRY_PROPERTIES = ['x', 'y', 'width', 'height'];
 const APPEARANCE_PROPERTIES = ['backgroundColor', 'borderColor', 'borderWidth', 'borderRadius'];
 const TEXT_PROPERTIES = [...GEOMETRY_PROPERTIES, 'content', 'fontSize', 'textAlign', ...APPEARANCE_PROPERTIES];
 
-function defineComponent(name, icon, width, height, content, styles, render, editableProperties = TEXT_PROPERTIES) {
+function defineComponent(name, icon, width, height, content, styles, render, editableProperties = TEXT_PROPERTIES, options = {}) {
   return {
-    name, icon, group: 'Básicos', defaults: { width, height, content, styles: { ...COMMON_STYLES, ...styles } },
+    name, icon, group: options.group ?? 'Básicos', contentFields: options.contentFields ?? null, minimumSize: options.minimumSize, defaults: { width, height, content, styles: { ...COMMON_STYLES, ...styles } },
     editableProperties, render,
   };
 }
@@ -57,6 +57,44 @@ function renderShape() {
   return content;
 }
 
+function createBlockText(className, text) {
+  const node = document.createElement('div');
+  node.className = className;
+  node.textContent = text;
+  return node;
+}
+
+function renderCard(element) {
+  const layout = document.createElement('div');
+  layout.className = 'component-content card-layout';
+  const title = createBlockText('card-title', element.content.title);
+  const description = createBlockText('card-description', element.content.description);
+  layout.append(title, description);
+  if (element.content.buttonText) layout.append(createBlockText('card-button', element.content.buttonText));
+  return layout;
+}
+
+function renderNavbar(element) {
+  const layout = document.createElement('div');
+  layout.className = 'component-content navbar-layout';
+  const brand = createBlockText('navbar-brand', element.content.brand);
+  const links = document.createElement('div');
+  links.className = 'navbar-links';
+  for (const text of element.content.links.split('\n').map(text => text.trim()).filter(Boolean)) {
+    links.append(createBlockText('navbar-link', text));
+  }
+  layout.append(brand, links);
+  return layout;
+}
+
+export function isValidContent(type, content) {
+  const fields = COMPONENT_TYPES[type]?.contentFields;
+  if (!fields) return typeof content === 'string';
+  return content !== null && typeof content === 'object' && !Array.isArray(content) &&
+    fields.every(field => typeof content[field.key] === 'string') &&
+    Object.keys(content).every(key => fields.some(field => field.key === key));
+}
+
 // El catálogo es la fuente de nombres, valores iniciales, propiedades y representación.
 export const COMPONENT_TYPES = {
   text: defineComponent('Texto', 'T', 240, 48, 'Escribí tu texto aquí', { borderWidth: 0, backgroundColor: 'transparent' }, renderText),
@@ -69,9 +107,22 @@ export const COMPONENT_TYPES = {
   image: defineComponent('Imagen', '▧', 280, 180, 'Imagen placeholder', { backgroundColor: '#ededed', textAlign: 'center' }, renderImage),
   rectangle: defineComponent('Rectángulo', '□', 240, 140, '', { backgroundColor: '#ededed' }, renderShape, [...GEOMETRY_PROPERTIES, 'backgroundColor', 'borderColor', 'borderWidth', 'borderRadius']),
   line: defineComponent('Línea', '─', 280, 2, '', { backgroundColor: '#777777', borderWidth: 0 }, renderShape, [...GEOMETRY_PROPERTIES, 'backgroundColor']),
-  navbar: { name: 'Navbar', icon: '▔', group: 'Componentes' },
+  navbar: defineComponent('Navbar', '▔', 340, 72, { brand: 'Mi sitio', links: 'Inicio\nProductos\nContacto' }, { fontSize: 14 }, renderNavbar, TEXT_PROPERTIES, {
+    group: 'Componentes', minimumSize: { width: 180, height: 48 },
+    contentFields: [
+      { key: 'brand', label: 'Marca o nombre', type: 'text' },
+      { key: 'links', label: 'Enlaces (uno por línea)', type: 'textarea' },
+    ],
+  }),
   sidebar: { name: 'Sidebar', icon: '◧', group: 'Componentes' },
-  card: { name: 'Card', icon: '▣', group: 'Componentes' },
+  card: defineComponent('Card', '▣', 280, 220, { title: 'Título de la card', description: 'Una breve descripción del contenido.', buttonText: 'Ver más' }, { borderRadius: 4 }, renderCard, TEXT_PROPERTIES, {
+    group: 'Componentes', minimumSize: { width: 140, height: 120 },
+    contentFields: [
+      { key: 'title', label: 'Título', type: 'text' },
+      { key: 'description', label: 'Descripción', type: 'textarea' },
+      { key: 'buttonText', label: 'Texto del botón (opcional)', type: 'text' },
+    ],
+  }),
   form: { name: 'Formulario', icon: '☷', group: 'Componentes' },
   table: { name: 'Tabla', icon: '▦', group: 'Componentes' },
   footer: { name: 'Footer', icon: '▁', group: 'Componentes' },
@@ -82,7 +133,7 @@ export function createComponent(type, id, position) {
   if (!definition?.defaults) throw new Error(`Componente no disponible: ${type}`);
   return {
     id, type, x: position.x, y: position.y,
-    ...definition.defaults, styles: { ...definition.defaults.styles },
+    ...definition.defaults, content: structuredClone(definition.defaults.content), styles: { ...definition.defaults.styles },
   };
 }
 
@@ -93,7 +144,8 @@ export function renderComponent(element) {
   wrapper.dataset.elementId = element.id;
   wrapper.tabIndex = 0;
   wrapper.setAttribute('role', 'button');
-  wrapper.setAttribute('aria-label', `Seleccionar ${definition.name}: ${element.content || element.id}`);
+  const label = definition.contentFields ? element.content[definition.contentFields[0].key] : element.content;
+  wrapper.setAttribute('aria-label', `Seleccionar ${definition.name}: ${label || element.id}`);
   Object.assign(wrapper.style, {
     left: `${element.x}px`, top: `${element.y}px`, width: `${element.width}px`, height: `${element.height}px`,
     fontSize: `${element.styles.fontSize}px`, textAlign: element.styles.textAlign,
