@@ -58,3 +58,13 @@
 .navbar-brand { font-weight: 700; font-size: 1.15em; flex: 0 1 auto; min-width: 0; overflow: hidden; overflow-wrap: anywhere; }
 .navbar-links { flex: 1; min-width: 0; display: flex; justify-content: var(--text-justify, flex-start); align-items: center; flex-wrap: wrap; gap: 6px 12px; overflow: hidden; }
 .navbar-link { white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+
+.sidebar-layout { display: flex; flex-direction: column; gap: 16px; padding: 16px; }
+.sidebar-title { flex-shrink: 0; font-weight: 700; font-size: 1.15em; white-space: pre-wrap; overflow-wrap: anywhere; }
+.sidebar-links { flex: 1; min-height: 0; overflow: hidden; }
+.sidebar-link { padding: 9px 0; border-bottom: 1px solid var(--component-border); white-space: pre-wrap; overflow-wrap: anywhere; }
+.sidebar-bottom { flex-shrink: 0; padding-top: 10px; border-top: 1px solid var(--component-border); white-space: pre-wrap; overflow-wrap: anywhere; }
+.footer-layout { display: flex; flex-direction: column; justify-content: center; gap: 12px; padding: 16px; }
+.footer-text { flex-shrink: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.footer-links { display: flex; flex-wrap: wrap; justify-content: var(--text-justify, flex-start); gap: 6px 16px; min-height: 0; overflow: hidden; }
+.footer-link { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

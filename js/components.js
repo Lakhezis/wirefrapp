@@ -74,16 +74,42 @@ function renderCard(element) {
   return layout;
 }
 
+function createBlockLinks(className, itemClassName, text) {
+  const links = document.createElement('div');
+  links.className = className;
+  for (const label of text.split('\n').map(line => line.trim()).filter(Boolean)) {
+    links.append(createBlockText(itemClassName, label));
+  }
+  return links;
+}
+
 function renderNavbar(element) {
   const layout = document.createElement('div');
   layout.className = 'component-content navbar-layout';
   const brand = createBlockText('navbar-brand', element.content.brand);
-  const links = document.createElement('div');
-  links.className = 'navbar-links';
-  for (const text of element.content.links.split('\n').map(text => text.trim()).filter(Boolean)) {
-    links.append(createBlockText('navbar-link', text));
-  }
+  const links = createBlockLinks('navbar-links', 'navbar-link', element.content.links);
   layout.append(brand, links);
+  return layout;
+}
+
+function renderSidebar(element) {
+  const layout = document.createElement('div');
+  layout.className = 'component-content sidebar-layout';
+  layout.append(
+    createBlockText('sidebar-title', element.content.title),
+    createBlockLinks('sidebar-links', 'sidebar-link', element.content.links),
+  );
+  if (element.content.bottomText) layout.append(createBlockText('sidebar-bottom', element.content.bottomText));
+  return layout;
+}
+
+function renderFooter(element) {
+  const layout = document.createElement('div');
+  layout.className = 'component-content footer-layout';
+  layout.append(
+    createBlockText('footer-text', element.content.text),
+    createBlockLinks('footer-links', 'footer-link', element.content.links),
+  );
   return layout;
 }
 
@@ -114,7 +140,14 @@ export const COMPONENT_TYPES = {
       { key: 'links', label: 'Enlaces (uno por línea)', type: 'textarea' },
     ],
   }),
-  sidebar: { name: 'Sidebar', icon: '◧', group: 'Componentes' },
+  sidebar: defineComponent('Sidebar', '◧', 240, 420, { title: 'Mi proyecto', links: 'Inicio\nProyectos\nConfiguración', bottomText: 'Ayuda' }, { fontSize: 14, backgroundColor: '#ededed' }, renderSidebar, TEXT_PROPERTIES, {
+    group: 'Componentes', minimumSize: { width: 140, height: 160 },
+    contentFields: [
+      { key: 'title', label: 'Título', type: 'text' },
+      { key: 'links', label: 'Enlaces (uno por línea)', type: 'textarea' },
+      { key: 'bottomText', label: 'Texto inferior (opcional)', type: 'text' },
+    ],
+  }),
   card: defineComponent('Card', '▣', 280, 220, { title: 'Título de la card', description: 'Una breve descripción del contenido.', buttonText: 'Ver más' }, { borderRadius: 4 }, renderCard, TEXT_PROPERTIES, {
     group: 'Componentes', minimumSize: { width: 140, height: 120 },
     contentFields: [
@@ -125,7 +158,13 @@ export const COMPONENT_TYPES = {
   }),
   form: { name: 'Formulario', icon: '☷', group: 'Componentes' },
   table: { name: 'Tabla', icon: '▦', group: 'Componentes' },
-  footer: { name: 'Footer', icon: '▁', group: 'Componentes' },
+  footer: defineComponent('Footer', '▁', 340, 120, { text: '© Mi sitio · Todos los derechos reservados', links: 'Contacto\nPrivacidad\nTérminos' }, { fontSize: 14 }, renderFooter, TEXT_PROPERTIES, {
+    group: 'Componentes', minimumSize: { width: 180, height: 72 },
+    contentFields: [
+      { key: 'text', label: 'Texto del pie', type: 'textarea' },
+      { key: 'links', label: 'Enlaces (uno por línea)', type: 'textarea' },
+    ],
+  }),
 };
 
 export function createComponent(type, id, position) {

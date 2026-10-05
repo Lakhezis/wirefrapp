@@ -38,7 +38,7 @@ Los proyectos pertenecen al navegador, perfil y origen utilizados. Usar siempre 
 - Edición inmediata de posición, tamaño, contenido y estilos disponibles por tipo.
 - Seis herramientas de alineación respecto del lienzo.
 
-Card y Navbar están habilitados como bloques. Sidebar, Formulario, Tabla y Footer siguen visibles como próximos. Los componentes son representaciones visuales; sus botones y campos se seleccionan y no funcionan como formularios reales.
+Card, Navbar, Sidebar y Footer están habilitados como bloques. Formulario y Tabla siguen visibles como próximos. Los componentes son representaciones visuales; sus botones y campos se seleccionan y no funcionan como formularios reales.
 
 Cambiar el dispositivo pide confirmación. Sí elimina los elementos y el historial; No o Escape conserva todo. El cambio se mantiene en memoria hasta pulsar Guardar, por lo que la copia anterior sigue disponible mientras no se la reemplace mediante un guardado manual.
 
@@ -95,10 +95,10 @@ node --experimental-default-type=module --test tests/*.test.mjs
 
 Las pruebas usan herramientas incluidas en Node: comprueban historial, validación, recuperación de proyectos, varias copias, datos dañados y fallos de cuota. Node solo se utiliza para las pruebas; la aplicación sigue necesitando únicamente un servidor estático.
 
-## Bloques: Card y Navbar
+## Bloques: Card, Navbar, Sidebar y Footer
 
-Card contiene título, descripción y texto de un botón opcional. Dejar el botón vacío lo oculta. Navbar contiene nombre de marca y enlaces, uno por línea; las líneas vacías se ignoran. Sus piezas internas no se seleccionan ni funcionan como botones o enlaces reales. Se mueve, redimensiona y edita el bloque completo.
+Card contiene título, descripción y texto de un botón opcional. Dejar el botón vacío lo oculta. Navbar contiene nombre de marca y enlaces, uno por línea; las líneas vacías se ignoran. Sidebar contiene título, enlaces verticales y texto inferior opcional; dejarlo vacío lo oculta. Footer contiene texto del pie y enlaces horizontales. En todos los bloques, los enlaces se escriben uno por línea y las líneas vacías se ignoran. Sus piezas internas no se seleccionan ni funcionan como botones o enlaces reales. Se mueve, redimensiona y edita el bloque completo.
 
 Los campos se definen en contentFields dentro del catálogo. En estos tipos, content es un objeto de textos; los componentes básicos conservan sus cadenas de texto anteriores. Cada instancia y duplicado recibe una copia independiente. El historial y el almacenamiento siguen guardando datos, nunca HTML. Los proyectos anteriores siguen siendo compatibles.
 
-Los mínimos de tamaño son 140 × 120 para Card y 180 × 48 para Navbar, definidos en minimumSize del catálogo y compartidos por tiradores, propiedades y validación de almacenamiento. El contenido se ajusta al espacio del bloque; textos largos que exceden el tamaño disponible se recortan dentro del bloque. Se conservan los estilos neutrales y el guardado exclusivamente manual.
+Los mínimos de tamaño son 140 × 120 para Card, 180 × 48 para Navbar, 140 × 160 para Sidebar y 180 × 72 para Footer, definidos en minimumSize del catálogo y compartidos por tiradores, propiedades y validación de almacenamiento. El contenido se ajusta al espacio del bloque; textos largos que exceden el tamaño disponible se recortan dentro del bloque. Se conservan los estilos neutrales y el guardado exclusivamente manual.
