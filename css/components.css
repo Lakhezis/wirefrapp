@@ -68,3 +68,16 @@
 .footer-text { flex-shrink: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
 .footer-links { display: flex; flex-wrap: wrap; justify-content: var(--text-justify, flex-start); gap: 6px 16px; min-height: 0; overflow: hidden; }
 .footer-link { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.form-layout { display: flex; flex-direction: column; gap: 14px; padding: 16px; }
+.form-title, .table-title { flex-shrink: 0; font-weight: 700; font-size: 1.15em; white-space: pre-wrap; overflow-wrap: anywhere; }
+.form-fields { flex: 1; min-height: 0; overflow: hidden; }
+.form-field { margin-bottom: 12px; }
+.form-label { margin-bottom: 5px; overflow-wrap: anywhere; }
+.form-input { height: 32px; border: 1px solid var(--component-border); border-radius: 3px; background: var(--component-background); }
+.form-button { flex-shrink: 0; align-self: var(--text-justify, flex-start); max-width: 100%; padding: 6px 14px; border: 1px solid var(--component-border); border-radius: 3px; background: var(--component-light); white-space: pre-wrap; overflow-wrap: anywhere; }
+.table-layout { padding: 12px; }
+.table-title { margin-bottom: 12px; }
+.wireframe-table { width: 100%; table-layout: fixed; border-collapse: collapse; text-align: inherit; }
+.wireframe-table th, .wireframe-table td { padding: 8px; border: 1px solid var(--component-border); text-align: inherit; overflow-wrap: anywhere; }
+.wireframe-table th { background: var(--component-light); font-weight: 700; }

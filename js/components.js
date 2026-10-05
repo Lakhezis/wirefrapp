@@ -113,6 +113,68 @@ function renderFooter(element) {
   return layout;
 }
 
+export function parseFormFields(text) {
+  return text.split('\n').map(label => label.trim()).filter(Boolean);
+}
+
+export function parseTableContent(content) {
+  const headers = content.headers.trim() ? content.headers.split('|').map(cell => cell.trim()) : [];
+  const rows = content.rows.split('\n').filter(line => line.trim()).map(line => {
+    const cells = line.split('|').map(cell => cell.trim());
+    return headers.map((_, index) => cells[index] ?? '');
+  });
+  return { headers, rows };
+}
+
+function renderForm(element) {
+  const layout = document.createElement('div');
+  layout.className = 'component-content form-layout';
+  if (element.content.title) layout.append(createBlockText('form-title', element.content.title));
+  const fields = document.createElement('div');
+  fields.className = 'form-fields';
+  for (const label of parseFormFields(element.content.fields)) {
+    const field = document.createElement('div');
+    field.className = 'form-field';
+    field.append(createBlockText('form-label', label), createBlockText('form-input', ''));
+    fields.append(field);
+  }
+  layout.append(fields);
+  if (element.content.buttonText) layout.append(createBlockText('form-button', element.content.buttonText));
+  return layout;
+}
+
+function renderTable(element) {
+  const layout = document.createElement('div');
+  layout.className = 'component-content table-layout';
+  if (element.content.title) layout.append(createBlockText('table-title', element.content.title));
+  const { headers, rows } = parseTableContent(element.content);
+  if (!headers.length) return layout;
+  const table = document.createElement('table');
+  table.className = 'wireframe-table';
+  const head = document.createElement('thead');
+  const headingRow = document.createElement('tr');
+  for (const text of headers) {
+    const cell = document.createElement('th');
+    cell.scope = 'col';
+    cell.textContent = text;
+    headingRow.append(cell);
+  }
+  head.append(headingRow);
+  const body = document.createElement('tbody');
+  for (const cells of rows) {
+    const row = document.createElement('tr');
+    for (const text of cells) {
+      const cell = document.createElement('td');
+      cell.textContent = text;
+      row.append(cell);
+    }
+    body.append(row);
+  }
+  table.append(head, body);
+  layout.append(table);
+  return layout;
+}
+
 export function isValidContent(type, content) {
   const fields = COMPONENT_TYPES[type]?.contentFields;
   if (!fields) return typeof content === 'string';
@@ -156,8 +218,22 @@ export const COMPONENT_TYPES = {
       { key: 'buttonText', label: 'Texto del botón (opcional)', type: 'text' },
     ],
   }),
-  form: { name: 'Formulario', icon: '☷', group: 'Componentes' },
-  table: { name: 'Tabla', icon: '▦', group: 'Componentes' },
+  form: defineComponent('Formulario', '☷', 320, 340, { title: 'Contacto', fields: 'Nombre\nCorreo electrónico\nMensaje', buttonText: 'Enviar' }, { fontSize: 14, borderRadius: 4 }, renderForm, TEXT_PROPERTIES, {
+    group: 'Componentes', minimumSize: { width: 160, height: 160 },
+    contentFields: [
+      { key: 'title', label: 'Título (opcional)', type: 'text' },
+      { key: 'fields', label: 'Campos (una etiqueta por línea)', type: 'textarea' },
+      { key: 'buttonText', label: 'Texto del botón (opcional)', type: 'text' },
+    ],
+  }),
+  table: defineComponent('Tabla', '▦', 340, 240, { title: 'Listado', headers: 'Nombre | Estado | Fecha', rows: 'Proyecto A | Activo | 01/10\nProyecto B | Pendiente | 02/10\nProyecto C | Activo | 03/10' }, { fontSize: 14 }, renderTable, TEXT_PROPERTIES, {
+    group: 'Componentes', minimumSize: { width: 180, height: 100 },
+    contentFields: [
+      { key: 'title', label: 'Título (opcional)', type: 'text' },
+      { key: 'headers', label: 'Columnas (separadas por |)', type: 'text' },
+      { key: 'rows', label: 'Filas (una por línea; celdas separadas por |)', type: 'textarea' },
+    ],
+  }),
   footer: defineComponent('Footer', '▁', 340, 120, { text: '© Mi sitio · Todos los derechos reservados', links: 'Contacto\nPrivacidad\nTérminos' }, { fontSize: 14 }, renderFooter, TEXT_PROPERTIES, {
     group: 'Componentes', minimumSize: { width: 180, height: 72 },
     contentFields: [

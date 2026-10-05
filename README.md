@@ -1,6 +1,6 @@
 # Wirefrapp
 
-Editor local de wireframes con HTML, CSS y JavaScript nativo. Implementa las etapas 1 a 6 y el inicio de la etapa 7: editor visual, componentes básicos, manipulación, propiedades, historial y proyectos con **guardado manual**. No requiere dependencias, backend ni compilación.
+Editor local de wireframes con HTML, CSS y JavaScript nativo. Implementa las etapas 1 a 6 y los seis bloques de la etapa 7: editor visual, componentes básicos, manipulación, propiedades, historial y proyectos con **guardado manual**. No requiere dependencias, backend ni compilación.
 
 ## Ejecutar localmente
 
@@ -38,7 +38,7 @@ Los proyectos pertenecen al navegador, perfil y origen utilizados. Usar siempre 
 - Edición inmediata de posición, tamaño, contenido y estilos disponibles por tipo.
 - Seis herramientas de alineación respecto del lienzo.
 
-Card, Navbar, Sidebar y Footer están habilitados como bloques. Formulario y Tabla siguen visibles como próximos. Los componentes son representaciones visuales; sus botones y campos se seleccionan y no funcionan como formularios reales.
+Card, Navbar, Sidebar, Footer, Formulario y Tabla están habilitados como bloques. Los componentes son representaciones visuales; sus botones y campos se seleccionan y no funcionan como formularios reales.
 
 Cambiar el dispositivo pide confirmación. Sí elimina los elementos y el historial; No o Escape conserva todo. El cambio se mantiene en memoria hasta pulsar Guardar, por lo que la copia anterior sigue disponible mientras no se la reemplace mediante un guardado manual.
 
@@ -95,10 +95,21 @@ node --experimental-default-type=module --test tests/*.test.mjs
 
 Las pruebas usan herramientas incluidas en Node: comprueban historial, validación, recuperación de proyectos, varias copias, datos dañados y fallos de cuota. Node solo se utiliza para las pruebas; la aplicación sigue necesitando únicamente un servidor estático.
 
-## Bloques: Card, Navbar, Sidebar y Footer
+## Bloques reutilizables
 
 Card contiene título, descripción y texto de un botón opcional. Dejar el botón vacío lo oculta. Navbar contiene nombre de marca y enlaces, uno por línea; las líneas vacías se ignoran. Sidebar contiene título, enlaces verticales y texto inferior opcional; dejarlo vacío lo oculta. Footer contiene texto del pie y enlaces horizontales. En todos los bloques, los enlaces se escriben uno por línea y las líneas vacías se ignoran. Sus piezas internas no se seleccionan ni funcionan como botones o enlaces reales. Se mueve, redimensiona y edita el bloque completo.
 
 Los campos se definen en contentFields dentro del catálogo. En estos tipos, content es un objeto de textos; los componentes básicos conservan sus cadenas de texto anteriores. Cada instancia y duplicado recibe una copia independiente. El historial y el almacenamiento siguen guardando datos, nunca HTML. Los proyectos anteriores siguen siendo compatibles.
 
-Los mínimos de tamaño son 140 × 120 para Card, 180 × 48 para Navbar, 140 × 160 para Sidebar y 180 × 72 para Footer, definidos en minimumSize del catálogo y compartidos por tiradores, propiedades y validación de almacenamiento. El contenido se ajusta al espacio del bloque; textos largos que exceden el tamaño disponible se recortan dentro del bloque. Se conservan los estilos neutrales y el guardado exclusivamente manual.
+Los mínimos de tamaño son 140 × 120 para Card, 180 × 48 para Navbar, 140 × 160 para Sidebar y 180 × 72 para Footer, 160 × 160 para Formulario y 180 × 100 para Tabla, definidos en minimumSize del catálogo y compartidos por tiradores, propiedades y validación de almacenamiento. El contenido se ajusta al espacio del bloque; textos largos que exceden el tamaño disponible se recortan dentro del bloque. Se conservan los estilos neutrales y el guardado exclusivamente manual.
+
+Formulario contiene título opcional, campos (una etiqueta por línea) y botón opcional. Los campos son representaciones de inputs vacíos, no controles para ingresar datos. Tabla contiene título opcional, encabezados separados por `|` y filas, una por línea, con sus celdas separadas por `|`. Por ejemplo:
+
+```text
+Columnas: Nombre | Estado | Fecha
+Filas:
+Proyecto A | Activo | 01/10
+Proyecto B | Pendiente | 02/10
+```
+
+Las líneas vacías se ignoran. Las filas cortas se completan con celdas vacías; las celdas que exceden la cantidad de columnas no se muestran, pero su texto se conserva en el panel. Sin encabezados no se muestra la grilla de la tabla. `|` funciona como separador y no admite escape dentro de una celda. Los títulos y botones vacíos se ocultan. Para ver más contenido, ampliar el bloque; el contenido que excede su tamaño se recorta.

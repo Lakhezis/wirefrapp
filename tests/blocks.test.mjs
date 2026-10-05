@@ -5,9 +5,9 @@ import { applyProperty } from '../js/properties.js';
 import { createHistory } from '../js/history.js';
 import { createStorage } from '../js/storage.js';
 import { resizeGeometry } from '../js/geometry.js';
-import { COMPONENT_TYPES } from '../js/components.js';
+import { COMPONENT_TYPES, parseFormFields, parseTableContent } from '../js/components.js';
 
-for (const type of ['card', 'navbar', 'sidebar', 'footer']) {
+for (const type of ['card', 'navbar', 'sidebar', 'footer', 'form', 'table']) {
   test(`${type}: contenido independiente, historial, mínimos y recuperación`, () => {
     const state = createEditorState(); const history = createHistory(state);
     const first = addComponent(state, type); history.commit();
@@ -33,6 +33,18 @@ for (const type of ['card', 'navbar', 'sidebar', 'footer']) {
     assert.deepEqual(storage.recover().project.elements, state.project.elements);
   });
 }
+
+test('campos de formulario: ignora líneas vacías y conserva las etiquetas como texto', () => {
+  assert.deepEqual(parseFormFields(' Nombre\n\n Correo \n <input> '), ['Nombre', 'Correo', '<input>']);
+  assert.deepEqual(parseFormFields(' \n '), []);
+});
+
+test('tabla: conserva celdas vacías, completa filas cortas y omite celdas sobrantes', () => {
+  assert.deepEqual(parseTableContent({ headers: ' Nombre | Estado | Fecha ', rows: 'Ana | | Hoy\n\nLuis\nEva | Activo | Ayer | Extra' }), {
+    headers: ['Nombre', 'Estado', 'Fecha'], rows: [['Ana', '', 'Hoy'], ['Luis', '', ''], ['Eva', 'Activo', 'Ayer']],
+  });
+  assert.deepEqual(parseTableContent({ headers: '', rows: '' }), { headers: [], rows: [] });
+});
 
 test('los proyectos anteriores con contenido de texto siguen siendo válidos', () => {
   const state = createEditorState(); addComponent(state, 'text');
