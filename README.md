@@ -57,3 +57,9 @@ Requieren Node.js:
 ```sh
 node --experimental-default-type=module --test tests/*.test.mjs
 ```
+
+## Desarrollo con IA
+
+Desarrollé este proyecto con la asistencia de **Codex, una IA de OpenAI**, para
+escribir y revisar código, preparar documentación y realizar pruebas. La idea,
+la dirección del proyecto y las decisiones finales estuvieron a mi cargo.
